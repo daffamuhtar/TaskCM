@@ -8,13 +8,13 @@ import org.jetbrains.skia.Bitmap
 import org.jetbrains.skia.Image
 
 @Composable
-fun rememberBitmapFromBytes(bytes: ByteArray?): ImageBitmap?{
-    return remember(bytes){
-        if (bytes!=null){
+actual fun rememberBitmapFromBytes(bytes: ByteArray?): ImageBitmap? {
+    return remember(bytes) {
+        if(bytes != null) {
             Bitmap.makeFromImage(
                 Image.makeFromEncoded(bytes)
             ).asComposeImageBitmap()
-        }else{
+        } else {
             null
         }
     }

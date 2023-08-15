@@ -22,7 +22,7 @@ fun ContactListItem(
     ){
         ContactPhoto(
             contact = contact,
-            modifier = Modifier.size(15.dp)
+            modifier = Modifier.size(50.dp)
         )
 
         Spacer(Modifier.width(16.dp))
