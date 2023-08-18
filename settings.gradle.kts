@@ -20,6 +20,8 @@ pluginManagement {
 
         id("org.jetbrains.compose").version(composeVersion)
     }
+
+
 }
 
 dependencyResolutionManagement {

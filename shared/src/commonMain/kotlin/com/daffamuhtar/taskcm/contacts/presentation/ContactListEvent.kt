@@ -9,11 +9,11 @@ sealed interface ContactListEvent {
     data class OnLastNameChanged(val value: String) : ContactListEvent
     data class OnEmailChanged(val value: String) : ContactListEvent
     data class OnPhoneNumberChanged(val value: String) : ContactListEvent
-    class OnPhotoPicked(val value: ByteArray) : ContactListEvent
-    object OnAddphotoClicked : ContactListEvent
+    class OnPhotoPicked(val bytes: ByteArray) : ContactListEvent
+    object OnAddPhotoClicked : ContactListEvent
     object SaveContact : ContactListEvent
-    data class SelectedContact(val contact: Contact) : ContactListEvent
-    data class EditCotact(val contact: Contact) : ContactListEvent
+    data class SelectContact(val contact: Contact) : ContactListEvent
+    data class EditContact(val contact: Contact) : ContactListEvent
     object DeleteContact : ContactListEvent
 
 }

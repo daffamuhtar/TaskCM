@@ -21,20 +21,28 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.daffamuhtar.taskcm.contacts.domain.Contact
+import com.daffamuhtar.taskcm.contacts.presentation.components.AddContactSheet
+import com.daffamuhtar.taskcm.contacts.presentation.components.ContactDetailSheet
 import com.daffamuhtar.taskcm.contacts.presentation.components.ContactListItem
+import com.daffamuhtar.taskcm.contacts.presentation.components.RecentlyAddedContacts
+import com.daffamuhtar.taskcm.core.presentation.ImagePicker
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ContactListScreen(
     state: ContactListState,
     newContact: Contact?,
-    onEvent: (ContactListEvent) -> Unit
+    onEvent: (ContactListEvent) -> Unit,
+    imagePicker : ImagePicker
 ) {
+    imagePicker.registerPicker { imageBytes ->
+        onEvent(ContactListEvent.OnPhotoPicked(imageBytes))
+    }
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    onEvent(ContactListEvent.OnAddphotoClicked)
+                    onEvent(ContactListEvent.OnAddNewContactClick)
                 },
                 shape = RoundedCornerShape(20.dp)
             ) {
@@ -47,29 +55,58 @@ fun ContactListScreen(
     ) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(16.dp),
+            contentPadding = PaddingValues(vertical = 16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+
+            item {
+                RecentlyAddedContacts(
+                    contacts = state.recentlyAddedContact,
+                    onClick = {
+                        onEvent(ContactListEvent.SelectContact(it))
+                    }
+                )
+            }
+
             item {
                 Text(
-                    text = "My Contacts (${state.contacts.size})",
-                    modifier = Modifier.fillMaxWidth()
+                    text = "My contacts (${state.contacts.size})",
+                    modifier = Modifier
+                        .fillMaxWidth()
                         .padding(horizontal = 16.dp),
-                    fontWeight =  FontWeight.Bold
+                    fontWeight = FontWeight.Bold
                 )
             }
 
             items(state.contacts) { contact ->
                 ContactListItem(
-                    contact= contact,
+                    contact = contact,
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable {
-                            onEvent(ContactListEvent.SelectedContact(contact))
+                            onEvent(ContactListEvent.SelectContact(contact))
                         }
                         .padding(horizontal = 16.dp)
                 )
             }
         }
     }
+
+    ContactDetailSheet(
+        isOpen = state.isSelectedContactSheetOpen,
+        selectedContact = state.selectedContact,
+        onEvent = onEvent
+    )
+
+    AddContactSheet(
+        state = state,
+        newContact = newContact,
+        isOpen = state.isAddContactSheetOpen,
+        onEvent = { event ->
+            if(event is ContactListEvent.OnAddPhotoClicked){
+                imagePicker.pickImage()
+            }
+            onEvent (event)
+        }
+    )
 }

@@ -41,6 +41,7 @@ kotlin {
                 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
                 implementation(compose.components.resources)
 
+//                implementation("app.cash.sqldelight:runtime:2.0.0")
                 implementation("com.squareup.sqldelight:runtime:1.5.5")
                 implementation("com.squareup.sqldelight:coroutines-extensions:1.5.5")
                 implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
@@ -53,6 +54,7 @@ kotlin {
         }
         val androidMain by getting {
             dependencies {
+//                implementation("app.cash.sqldelight:android-driver:2.0.0")
                 implementation("com.squareup.sqldelight:android-driver:1.5.5")
                 implementation("androidx.appcompat:appcompat:1.6.1")
                 implementation("androidx.activity:activity-compose:1.7.2")
@@ -64,6 +66,7 @@ kotlin {
         val iosSimulatorArm64Main by getting
         val iosMain by creating {
             dependencies {
+                implementation("app.cash.sqldelight:native-driver:2.0.0")
                 implementation("com.squareup.sqldelight:native-driver:1.5.5")
             }
             dependsOn(commonMain)
@@ -101,7 +104,13 @@ sqldelight {
         sourceFolders = listOf("sqldelight")
     }
 }
-
+//sqldelight {
+//    databases {
+//        create("Database") {
+//            packageName.set("com.example")
+//        }
+//    }
+//}
 dependencies {
     implementation("androidx.core:core:1.10.1")
     commonMainApi("dev.icerock.moko:mvvm-core:0.16.1")

@@ -8,9 +8,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import com.daffamuhtar.taskcm.contacts.data.SqlDelightContactDataSource
 import com.daffamuhtar.taskcm.contacts.presentation.ContactListScreen
 import com.daffamuhtar.taskcm.contacts.presentation.ContactListViewModel
 import com.daffamuhtar.taskcm.core.presentation.ContactsTheme
+import com.daffamuhtar.taskcm.core.presentation.ImagePicker
+import com.daffamuhtar.taskcm.di.AppModule
 import dev.icerock.moko.mvvm.compose.getViewModel
 import dev.icerock.moko.mvvm.compose.viewModelFactory
 
@@ -18,7 +21,8 @@ import dev.icerock.moko.mvvm.compose.viewModelFactory
 fun App(
     darkTheme : Boolean,
     dynamicColor : Boolean,
-
+    appModule :AppModule,
+    imagePicker: ImagePicker,
 ) {
 
     ContactsTheme(
@@ -29,7 +33,7 @@ fun App(
         val viewModel =  getViewModel(
             key ="contact-list-screen",
             factory = viewModelFactory {
-                ContactListViewModel()
+                ContactListViewModel(appModule.contactDataSource)
             }
         )
 
@@ -42,7 +46,8 @@ fun App(
             ContactListScreen(
                 state = state,
                 newContact = viewModel.newContact,
-                onEvent = viewModel::onEvent
+                onEvent = viewModel::onEvent,
+                imagePicker = imagePicker
             )
         }
     }
