@@ -28,10 +28,6 @@ fun App(
     imagePicker: ImagePicker,
 ) {
 
-//    BirdAppTheme {
-//        val birdsViewModel = getViewModel(Unit, viewModelFactory { com.daffamuhtar.taskcm.contacts.presentation.bird.BirdsViewModel() })
-//        BirdsPage(birdsViewModel)
-//    }
     ContactsTheme(
         darkTheme = darkTheme,
         dynamicColor = dynamicColor,
