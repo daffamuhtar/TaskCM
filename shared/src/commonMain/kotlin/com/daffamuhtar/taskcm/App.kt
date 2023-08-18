@@ -11,6 +11,9 @@ import androidx.compose.ui.Modifier
 import com.daffamuhtar.taskcm.contacts.data.SqlDelightContactDataSource
 import com.daffamuhtar.taskcm.contacts.presentation.ContactListScreen
 import com.daffamuhtar.taskcm.contacts.presentation.ContactListViewModel
+//import com.daffamuhtar.taskcm.contacts.presentation.bird.BirdAppTheme
+//import com.daffamuhtar.taskcm.contacts.presentation.bird.BirdsPage
+//import com.daffamuhtar.taskcm.contacts.presentation.bird.com.daffamuhtar.taskcm.contacts.presentation.bird.BirdsViewModel
 import com.daffamuhtar.taskcm.core.presentation.ContactsTheme
 import com.daffamuhtar.taskcm.core.presentation.ImagePicker
 import com.daffamuhtar.taskcm.di.AppModule
@@ -25,6 +28,10 @@ fun App(
     imagePicker: ImagePicker,
 ) {
 
+//    BirdAppTheme {
+//        val birdsViewModel = getViewModel(Unit, viewModelFactory { com.daffamuhtar.taskcm.contacts.presentation.bird.BirdsViewModel() })
+//        BirdsPage(birdsViewModel)
+//    }
     ContactsTheme(
         darkTheme = darkTheme,
         dynamicColor = dynamicColor,

@@ -3,6 +3,8 @@ plugins {
     id("com.android.library")
     id("org.jetbrains.compose")
     id("com.squareup.sqldelight")
+
+    kotlin("plugin.serialization") version "1.8.21"
 }
 
 kotlin {
@@ -31,6 +33,12 @@ kotlin {
         }
     }
 
+
+    val coroutinesVersion = "1.6.4"
+    val ktorVersion = "2.2.1"
+    val koinVersion = "3.3.2"
+
+
     sourceSets {
         val commonMain by getting {
             dependencies {
@@ -45,6 +53,16 @@ kotlin {
                 implementation("com.squareup.sqldelight:runtime:1.5.5")
                 implementation("com.squareup.sqldelight:coroutines-extensions:1.5.5")
                 implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
+
+                //ktor
+                implementation("media.kamel:kamel-image:0.6.0")
+//                implementation("io.ktor:ktor-client-cio:2.2.1")
+                implementation("io.ktor:ktor-client-auth:2.1.0")
+                implementation("io.ktor:ktor-client-logging:2.2.1")
+                implementation("io.ktor:ktor-client-core:2.3.1")
+                implementation("io.ktor:ktor-client-content-negotiation:2.3.1")
+                implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.1")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
             }
         }
         val commonTest by getting {
@@ -58,6 +76,15 @@ kotlin {
                 implementation("com.squareup.sqldelight:android-driver:1.5.5")
                 implementation("androidx.appcompat:appcompat:1.6.1")
                 implementation("androidx.activity:activity-compose:1.7.2")
+
+                //ktor
+//                api("androidx.activity:activity-compose:1.6.1")
+//                api("androidx.appcompat:appcompat:1.6.1")
+//                api("androidx.core:core-ktx:1.9.0")
+                implementation("io.ktor:ktor-client-cio:2.2.1")
+                implementation("io.ktor:ktor-client-android:2.3.1")
+                implementation("io.ktor:ktor-client-auth:2.1.0")
+                implementation("io.ktor:ktor-client-logging:2.2.1")
             }
         }
         val androidUnitTest by getting
@@ -68,6 +95,7 @@ kotlin {
             dependencies {
                 implementation("app.cash.sqldelight:native-driver:2.0.0")
                 implementation("com.squareup.sqldelight:native-driver:1.5.5")
+                implementation("io.ktor:ktor-client-darwin:2.3.1")
             }
             dependsOn(commonMain)
             iosX64Main.dependsOn(this)
