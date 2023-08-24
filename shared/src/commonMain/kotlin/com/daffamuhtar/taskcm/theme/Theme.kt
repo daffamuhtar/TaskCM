@@ -1,4 +1,4 @@
-package com.daffamuhtar.taskcm.ui.theme
+package com.daffamuhtar.taskcm.theme
 
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme

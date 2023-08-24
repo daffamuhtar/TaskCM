@@ -2,9 +2,9 @@ package com.daffamuhtar.taskcm.core.presentation
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import com.daffamuhtar.taskcm.ui.theme.DarkColorScheme
-import com.daffamuhtar.taskcm.ui.theme.LightColorScheme
-import com.daffamuhtar.taskcm.ui.theme.Typography
+import com.daffamuhtar.taskcm.theme.DarkColorScheme
+import com.daffamuhtar.taskcm.theme.LightColorScheme
+import com.daffamuhtar.taskcm.theme.Typography
 
 @Composable
 actual fun ContactsTheme(

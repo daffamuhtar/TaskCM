@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class ContactListViewModel(
+class   ContactListViewModel(
     private val contactDataSource: ContactDataSource
 ) : ViewModel() {
 

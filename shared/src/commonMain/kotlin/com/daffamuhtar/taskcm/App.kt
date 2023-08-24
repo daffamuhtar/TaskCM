@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import com.daffamuhtar.taskcm.approval.component.ApprovalAppDrawer
 import com.daffamuhtar.taskcm.contacts.data.SqlDelightContactDataSource
 import com.daffamuhtar.taskcm.contacts.presentation.ContactListScreen
 import com.daffamuhtar.taskcm.contacts.presentation.ContactListViewModel
@@ -42,16 +43,19 @@ fun App(
 
         val state by viewModel.state.collectAsState()
 
+
         Surface (
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ){
-            ContactListScreen(
-                state = state,
-                newContact = viewModel.newContact,
-                onEvent = viewModel::onEvent,
-                imagePicker = imagePicker
-            )
+//            ContactListScreen(
+//                state = state,
+//                newContact = viewModel.newContact,
+//                onEvent = viewModel::onEvent,
+//                imagePicker = imagePicker
+//            )
+
+            ApprovalAppDrawer()
         }
     }
 

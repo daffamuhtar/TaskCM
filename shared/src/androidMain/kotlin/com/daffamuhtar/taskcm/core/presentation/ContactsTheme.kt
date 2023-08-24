@@ -12,9 +12,9 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
-import com.daffamuhtar.taskcm.ui.theme.DarkColorScheme
-import com.daffamuhtar.taskcm.ui.theme.LightColorScheme
-import com.daffamuhtar.taskcm.ui.theme.Typography
+import com.daffamuhtar.taskcm.theme.DarkColorScheme
+import com.daffamuhtar.taskcm.theme.LightColorScheme
+import com.daffamuhtar.taskcm.theme.Typography
 
 @Composable
 actual fun ContactsTheme(

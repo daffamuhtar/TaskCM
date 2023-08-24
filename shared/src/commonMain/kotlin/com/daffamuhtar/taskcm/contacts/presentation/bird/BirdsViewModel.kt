@@ -31,6 +31,7 @@ data class BirdsUiState(
 class BirdsViewModel : ViewModel() {
     private val _uiState = MutableStateFlow<BirdsUiState>(BirdsUiState())
     val uiState = _uiState.asStateFlow()
+    var token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjIiLCJ1c2VybmFtZSI6IlVNLUJMT0ctOTk5OSIsImlhdCI6MTY5Mjg0MzUwMiwiZXhwIjoxNjkyOTI5OTAyfQ.LF_GD6uOzavFcGlUZKxfn8tnPFC5HOGKTVp9y2rcQDQ"
 
     private val httpClient = HttpClient {
 
@@ -50,7 +51,7 @@ class BirdsViewModel : ViewModel() {
             bearer {
                 refreshTokens { // this: RefreshTokensParams
                     // Refresh tokens and return them as the 'BearerTokens' instance
-                    BearerTokens("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjIiLCJ1c2VybmFtZSI6IlVNLUJMT0ctOTk5OSIsImlhdCI6MTY5MjM1MDQ1NSwiZXhwIjoxNjkyNDM2ODU1fQ.2uYpFCz204KywMTuHK0v0pMPo8j4J3iugFQ37WfdIws", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjIiLCJ1c2VybmFtZSI6IlVNLUJMT0ctOTk5OSIsImlhdCI6MTY5MjM1MDQ1NSwiZXhwIjoxNjkyNDM2ODU1fQ.2uYpFCz204KywMTuHK0v0pMPo8j4J3iugFQ37WfdIws")
+                    BearerTokens(token, token)
                 }
             }
         }
