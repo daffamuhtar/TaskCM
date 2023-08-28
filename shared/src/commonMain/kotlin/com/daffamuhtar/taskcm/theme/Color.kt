@@ -65,6 +65,83 @@ val OutlineDark = Color(0xff72796f)
 
 //=========================================
 
+// Primary
+val color_colorPrimary = Color(0xffFFDB0F)
+val color_colorPrimaryDark = Color(0xff816D00)
+val color_colorAccent = Color(0xffFFDB0F)
+
+//Yellow
+val color_yellow = Color(0xffFFDB0F)
+val color_yellowsoft = Color(0xffFFEE9C)
+val color_yellowdark = Color(0xff816D00)
+val color_yellowshadow = Color(0xffCFB046)
+val color_yellowClicked = Color(0xffE4C200)
+val color_yellowDisable = Color(0xffFFEE9C)
+
+//BnW
+val color_white = Color(0xffFFFFFF)
+val color_background = Color(0xffF4F4F4)
+val color_black = Color(0xff000000)
+val color_transblack = Color(0xff83000000)
+val color_transparant = Color(0xff00FFFFFF)
+
+//Grey
+val color_greymark = Color(0xff838383)
+val color_grey = Color(0xffA3A3A3)
+val color_grey3 = Color(0xff838383)
+val color_grey2 = Color(0xffCDCDCD)
+val color_grey1 = Color(0xffF4F4F4)
+val color_grey0 = Color(0xffF6F6F6)
+val color_grey_text_disabled = Color(0xff838383)
+val color_lightgrey = Color(0xffDDDDDD)
+val color_greysoft = Color(0xffEDEDED)
+val color_transgrey = Color(0xff3C696969)
+val color_greydark = Color(0xff292929)
+val color_greyClicked = Color(0xffCCCCCC)
+val color_greyDisable = Color(0xffEEEEEE)
+
+//Red
+val color_reddark = Color(0xffA80505)
+val color_red = Color(0xffE84034)
+val color_redClicked = Color(0xffE11B0D)
+val color_redDisable = Color(0xffFBB8B3)
+
+val color_redsoft = Color(0xffFFE6E6)
+val color_redSoftClicked = Color(0xffFFCFCF)
+val color_redSoftDisable = Color(0xffFFF4F4)
+
+//Green
+val color_greendark = Color(0xff18641A)
+val color_green = Color(0xff3EA542)
+val color_greensoft = Color(0xffD8FFD8)
+val color_green1 = Color(0xff4CAF50)
+
+//Blue
+val color_blue = Color(0xff4B6F9E)
+val color_bluedark = Color(0xff25303F)
+val color_blueCliked = Color(0xff3E67AC)
+val color_blueDisable = Color(0xffA2B8D5)
+
+val color_bluesoft = Color(0xffE6F6FF)
+val color_bluesoftClicked = Color(0xffC8E9FD)
+val color_bluesoftDisable = Color(0xffF2F7FA)
+
+val color_blueRounded = Color(0xffE8F2FF)
+
+
+//Orange
+val color_orange = Color(0xffFF9800)
+val color_orangesoft = Color(0xffFFF1DE)
+val color_purple = Color(0xff673AB7)
+
+//Repair
+val color_storing = Color(0xffA80505)
+val color_adhoc = Color(0xff5D78FF)
+val color_pb = Color(0xffFF5722)
+val color_pnb = Color(0xff00BCD4)
+val color_tire = Color(0xff41924B)
+//=======================================
+
 val replyLightPrimary = Color(0xFF825500)
 val replyLightOnPrimary = Color(0xFFFFFFFF)
 val replyLightPrimaryContainer = Color(0xFFFFDDAE)
@@ -131,7 +208,7 @@ val blue200 = Color(0xFF9FA8DA)
 val blue700 = Color(0xFF303F9F)
 
 val purple200 = Color(0xFFB39DDB)
-val purple = Color(0xFF833AB4)
+//val purple = Color(0xFF833AB4)
 val purple700 = Color(0xFF512DA8)
 
 val orange200 = Color(0xFFff7961)

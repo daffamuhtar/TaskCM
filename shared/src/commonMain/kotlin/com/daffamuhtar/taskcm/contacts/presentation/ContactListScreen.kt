@@ -38,6 +38,7 @@ fun ContactListScreen(
     imagePicker.registerPicker { imageBytes ->
         onEvent(ContactListEvent.OnPhotoPicked(imageBytes))
     }
+
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(

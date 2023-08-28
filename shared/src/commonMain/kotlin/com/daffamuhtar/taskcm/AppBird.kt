@@ -66,31 +66,15 @@ fun BirdsPage(viewModel: BirdsViewModel) {
         verticalArrangement = Arrangement.Center
     ) {
 
-        Row(
-            Modifier.fillMaxWidth().padding(5.dp),
-            horizontalArrangement = Arrangement.spacedBy(5.dp)
-        ) {
-            for (category in uiState.categories) {
-                Button(
-                    onClick = {
-                        viewModel.selectCategory(category)
-                    },
-                    modifier = Modifier.aspectRatio(1.0f).fillMaxSize().weight(1.0f),
 
-                )
-                {
-                    Text(category)
-                }
-            }
-        }
-        AnimatedVisibility(uiState.selectedImages.isNotEmpty()) {
+        AnimatedVisibility(uiState.images.isNotEmpty()) {
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
                 horizontalArrangement = Arrangement.spacedBy(5.dp),
                 verticalArrangement = Arrangement.spacedBy(5.dp),
                 modifier = Modifier.fillMaxSize().padding(horizontal = 5.dp),
                 content = {
-                    items(uiState.selectedImages) {
+                    items(uiState.images) {
                         BirdImageCell(it)
                     }
                 }
@@ -110,7 +94,6 @@ fun BirdImageCell(image: BirdImage) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
-            fontWeight = FontWeight.Bold
         )
 
         Spacer(modifier = Modifier.height(16.dp))

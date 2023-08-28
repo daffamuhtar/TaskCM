@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import com.daffamuhtar.taskcm.approval.ApprovalViewModel
 import com.daffamuhtar.taskcm.approval.component.ApprovalAppDrawer
 import com.daffamuhtar.taskcm.contacts.data.SqlDelightContactDataSource
 import com.daffamuhtar.taskcm.contacts.presentation.ContactListScreen
@@ -34,15 +35,24 @@ fun App(
         dynamicColor = dynamicColor,
     ){
 
-        val viewModel =  getViewModel(
-            key ="contact-list-screen",
+        val viewModel2 =  getViewModel(
+            key ="approval-list-screen",
             factory = viewModelFactory {
-                ContactListViewModel(appModule.contactDataSource)
+                ApprovalViewModel()
             }
         )
 
-        val state by viewModel.state.collectAsState()
+        val state2 by viewModel2.state.collectAsState()
 
+//        val viewModel =  getViewModel(
+//            key ="contact-list-screen",
+//            factory = viewModelFactory {
+//                ContactListViewModel(appModule.contactDataSource)
+//            }
+//        )
+//
+//        val state by viewModel.state.collectAsState()
+//
 
         Surface (
             modifier = Modifier.fillMaxSize(),
@@ -55,7 +65,11 @@ fun App(
 //                imagePicker = imagePicker
 //            )
 
-            ApprovalAppDrawer()
+            ApprovalAppDrawer(
+                state = state2,
+                onEvent = viewModel2::onEvent,
+            )
+
         }
     }
 

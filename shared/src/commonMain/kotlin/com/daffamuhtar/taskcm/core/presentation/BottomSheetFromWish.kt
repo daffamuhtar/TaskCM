@@ -44,7 +44,6 @@ fun BottomSheetFromWish(
                 )
                 .background(MaterialTheme.colorScheme.surface)
                 .padding(16.dp)
-                .verticalScroll(rememberScrollState())
         ){
             content()
         }
