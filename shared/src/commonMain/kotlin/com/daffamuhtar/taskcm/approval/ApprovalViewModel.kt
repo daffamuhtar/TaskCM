@@ -1,19 +1,21 @@
 package com.daffamuhtar.taskcm.approval
 
+import com.daffamuhtar.taskcm.approval.data.DataPostApproveRepairOrder
 import com.daffamuhtar.taskcm.approval.data.DataPostRefreshToken
+import com.daffamuhtar.taskcm.approval.data.DataPostRejectRepairOrder
 import com.daffamuhtar.taskcm.approval.data.RepairDetailAfterCheckItem
 import com.daffamuhtar.taskcm.approval.data.RepairDetailInfo
+import com.daffamuhtar.taskcm.approval.data.RepairDetailPartListItem
+import com.daffamuhtar.taskcm.approval.data.RepairDetailPartTotalPrice
 import com.daffamuhtar.taskcm.approval.data.RepairItem
-import com.daffamuhtar.taskcm.approval.data.response.ResponseRefreshToken
+import com.daffamuhtar.taskcm.approval.data.ResponseRefreshToken
+import com.daffamuhtar.taskcm.approval.data.ResponseResult
 import com.daffamuhtar.taskcm.approval.utils.RepairListEvent
 import com.daffamuhtar.taskcm.approval.utils.RepairListState
 import dev.icerock.moko.mvvm.viewmodel.ViewModel
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
-import io.ktor.client.plugins.ClientRequestException
 import io.ktor.client.plugins.HttpTimeout
-import io.ktor.client.plugins.RedirectResponseException
-import io.ktor.client.plugins.ServerResponseException
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
 import io.ktor.serialization.kotlinx.json.json
@@ -24,13 +26,12 @@ import kotlinx.coroutines.launch
 import io.ktor.client.plugins.auth.Auth
 import io.ktor.client.plugins.auth.providers.BearerTokens
 import io.ktor.client.plugins.auth.providers.bearer
-import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.DEFAULT
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
-import io.ktor.client.request.header
 import io.ktor.client.request.post
+import io.ktor.client.request.put
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
@@ -136,6 +137,136 @@ class ApprovalViewModel() : ViewModel() {
                 }
             }
 
+            is RepairListEvent.OnLoadingRepairDetailPartList -> {
+                viewModelScope.launch {
+                    _state.update {
+                        it.copy(
+                            isLoadingGetRepairDetailPartList = true
+                        )
+                    }
+                    val repairDetailPartListItems = getRepairDetailPartList()
+
+                    onEvent(RepairListEvent.DataRepairDetailPartList(repairDetailPartListItems))
+
+                }
+            }
+
+
+            is RepairListEvent.DataRepairDetailPartList -> {
+                _state.update {
+                    it.copy(
+                        isLoadingGetRepairDetailPartList = false,
+                        repairDetailPartListItems = event.repairDetailPartListItems
+                    )
+                }
+            }
+
+            is RepairListEvent.OnLoadingRepairDetailPartTotalPrice -> {
+                viewModelScope.launch {
+                    _state.update {
+                        it.copy(
+                            isLoadingGetRepairDetailPartTotalPrice = true
+                        )
+                    }
+                    val repairDetailPartListItems = getRepairDetailPartTotalPrice()
+
+                    onEvent(RepairListEvent.DataRepairDetailPartTotalPrice(repairDetailPartListItems))
+
+                }
+            }
+
+
+            is RepairListEvent.DataRepairDetailPartTotalPrice -> {
+                _state.update {
+                    it.copy(
+                        isLoadingGetRepairDetailPartTotalPrice = false,
+                        repairDetailPartTotalPrice = event.repairDetailPartTotalPrice
+                    )
+                }
+            }
+
+            is RepairListEvent.OnLoadingRepairDetailWorkshopOfferNote -> {
+                viewModelScope.launch {
+                    _state.update {
+                        it.copy(
+                            isLoadingGetRepairDetailWorkshopOfferNote = true
+                        )
+                    }
+                    val repairDetailWorkshopOfferNote = getRepairDetailWorkshopOfferNote()
+
+                    onEvent(
+                        RepairListEvent.DataRepairDetailWorkshopOfferNote(
+                            repairDetailWorkshopOfferNote
+                        )
+                    )
+
+                }
+            }
+
+
+            is RepairListEvent.DataRepairDetailWorkshopOfferNote -> {
+                _state.update {
+                    it.copy(
+                        isLoadingGetRepairDetailWorkshopOfferNote = false,
+                        repairDetailWorkshopOfferNote = event.repairDetailWorkshopOfferNote
+                    )
+                }
+            }
+
+            is RepairListEvent.PostReject -> {
+                viewModelScope.launch {
+                    _state.update {
+                        it.copy(
+                            isLoadingPostRejectRepairOrder = true
+                        )
+                    }
+
+                    val response = rejectRepair(
+                        offerId = event.offerId,
+                        orderId = event.orderId
+                    )
+
+                    onEvent(RepairListEvent.DataResponseRejectRepairOrder(response))
+
+                }
+            }
+
+            is RepairListEvent.DataResponseRejectRepairOrder -> {
+                _state.update {
+                    it.copy(
+                        isLoadingPostRejectRepairOrder = false,
+                        rejectRepairOrderResponseResult = event.responseResult
+                    )
+                }
+            }
+
+            is RepairListEvent.PostApproveRepairOrder -> {
+                viewModelScope.launch {
+                    _state.update {
+                        it.copy(
+                            isLoadingPostApproveRepairOrder = true
+                        )
+                    }
+
+                    val response = approveRepairOrder(
+                        offerId = event.offerId,
+                        orderId = event.orderId
+                    )
+
+                    onEvent(RepairListEvent.DataResponseApproveRepairOrder(response))
+
+                }
+            }
+
+            is RepairListEvent.DataResponseApproveRepairOrder -> {
+                _state.update {
+                    it.copy(
+                        isLoadingPostApproveRepairOrder = false,
+                        approveRepairOrderResponseResult = event.responseResult
+                    )
+                }
+            }
+
             else -> Unit
         }
     }
@@ -143,20 +274,28 @@ class ApprovalViewModel() : ViewModel() {
 
     val uiState = _uiState.asStateFlow()
     var token =
-        "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjIiLCJ1c2VybmFtZSI6IlVNLUJMT0ctOTk5OSIsImlhdCI6MTY5MzE5MjA2MSwiZXhwIjoxNjkzMjc4NDYxfQ.9DwznJP4DgaXHh2FtI4fAXnhidTwX_I4kzZKiel2QrI"
+        "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjIiLCJ1c2VybmFtZSI6IlVNLUJMT0ctOTk5OSIsImlhdCI6MTY5MzI3ODg2OCwiZXhwIjoxNjkzMzY1MjY4fQ.0PYTjW50PFqiPPdbzTdm7xHgZslvmjwjFANZBj0hOkQ"
 
     private val httpClient = HttpClient {
 
+        install(HttpTimeout) {
+            requestTimeoutMillis = 100000
+            connectTimeoutMillis = 100000
+        }
+
         install(Logging) {
             logger = Logger.DEFAULT
-            level = LogLevel.HEADERS
+            level = LogLevel.ALL
         }
 
         install(ContentNegotiation) {
             json(Json {
                 ignoreUnknownKeys = true
                 useAlternativeNames = false
+                prettyPrint = true
+                isLenient = true
             })
+
         }
 
         install(Auth) {
@@ -166,10 +305,6 @@ class ApprovalViewModel() : ViewModel() {
                     BearerTokens(accessToken = token, refreshToken = token)
                 }
             }
-        }
-
-        defaultRequest {
-            header("Content-Type", "application/json; charset=utf-8")
         }
 
     }
@@ -203,27 +338,47 @@ class ApprovalViewModel() : ViewModel() {
         }
     }
 
-    suspend fun refreshToken(): ResponseRefreshToken? {
-        return try {
-
-            httpClient.post("https://api-staging-v10.fleetify.id/api/api/auth/refresh_token") {
+    suspend fun refreshToken(): ResponseRefreshToken {
+        val images: ResponseRefreshToken = httpClient
+            .post("https://api-staging-v10.fleetify.id/api/auth/refresh_token") {
                 contentType(ContentType.Application.Json)
-                setBody(DataPostRefreshToken("UM-BLOG-9999","1104","Mechanic"))
-            }.body<ResponseRefreshToken>()
+                setBody(DataPostRefreshToken("UM-BLOG-9999", "1104", "mechanic"))
+            }.body()
 
-        } catch (ex: RedirectResponseException) {
-            // 3xx - responses
-            println("Error: ${ex.response.status.description}")
-            null
-        } catch (ex: ClientRequestException) {
-            // 4xx - responses
-            println("Error: ${ex.response.status.description}")
-            null
-        } catch (ex: ServerResponseException) {
-            // 5xx - response
-            println("Error: ${ex.response.status.description}")
-            null
-        }
+        return images
+    }
+
+    suspend fun rejectRepair(offerId: String, orderId: String): ResponseResult {
+        val response = httpClient
+            .put("https://api-staging-v10.fleetify.id/api/orders/not_approve_order_any_level") {
+                contentType(ContentType.Application.Json)
+                setBody(
+                    DataPostRejectRepairOrder(
+                        loggedGAId = "GA-BLOG-2",
+                        offerId = offerId,
+                        orderId = orderId,
+                        rejectionNote = "Tolak ya"
+                    )
+                )
+            }.body<ResponseResult>()
+
+        return response
+    }
+
+    suspend fun approveRepairOrder(offerId: String, orderId: String): ResponseResult {
+        val response = httpClient
+            .put("https://api-staging-v10.fleetify.id/api/orders/approve_level_1") {
+                contentType(ContentType.Application.Json)
+                setBody(
+                    DataPostApproveRepairOrder(
+                        loggedGAId = "GA-BLOG-2",
+                        offerId = offerId,
+                        orderId = orderId,
+                    )
+                )
+            }.body<ResponseResult>()
+
+        return response
     }
 
 
@@ -242,16 +397,30 @@ class ApprovalViewModel() : ViewModel() {
     }
 
     suspend fun getRepairDetailAfterCheck(): List<RepairDetailAfterCheckItem> {
-        val RepairDetailAfterCheckItems = httpClient
+        val repairDetailAfterCheckItems = httpClient
             .get("https://api-staging-v10.fleetify.id/api/orders/check_result_photos?orderId=ORD/23112022/215932/MBA/VHC-BLOG-2")
             .body<List<RepairDetailAfterCheckItem>>()
-        return RepairDetailAfterCheckItems
+        return repairDetailAfterCheckItems
     }
 
-    suspend fun getRepairDetailPartList(): List<RepairDetailAfterCheckItem> {
-        val RepairDetailAfterCheckItems = httpClient
-            .get("https://api-staging-v10.fleetify.id/api/orders/check_result_photos?orderId=ORD/23112022/215932/MBA/VHC-BLOG-2")
-            .body<List<RepairDetailAfterCheckItem>>()
-        return RepairDetailAfterCheckItems
+    suspend fun getRepairDetailPartList(): List<RepairDetailPartListItem> {
+        val repairDetailPartList = httpClient
+            .get("https://api-staging-v10.fleetify.id/api/orders/offer_detail_by_offer_id?offerId=SP-6/ORD/23112022/215932/MBA/VHC-BLOG-2")
+            .body<List<RepairDetailPartListItem>>()
+        return repairDetailPartList
+    }
+
+    suspend fun getRepairDetailPartTotalPrice(): RepairDetailPartTotalPrice {
+        val repairDetailPartTotalPrice = httpClient
+            .get("https://api-staging-v10.fleetify.id/api/orders/offer_price_by_offer_id?offerId=SP-6/ORD/23112022/215932/MBA/VHC-BLOG-2")
+            .body<List<RepairDetailPartTotalPrice>>()
+        return repairDetailPartTotalPrice[0]
+    }
+
+    suspend fun getRepairDetailWorkshopOfferNote(): String {
+        val workshopOfferNote = httpClient
+            .get("https://api-staging-v10.fleetify.id/api/orders/offer_letter_note_from_workshop?orderId=ORD/23112022/215932/MBA/VHC-BLOG-2")
+            .body<String>()
+        return workshopOfferNote
     }
 }

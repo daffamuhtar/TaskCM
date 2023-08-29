@@ -13,7 +13,7 @@ data class RepairItem(
     val problemName: List<ProblemName>,
     val scheduledDate: String,
     val stageName: String,
-    val totalAfterTax: String,
+    val totalAfterTax: String?,
     val vehicleBrand: String,
     val vehicleLicenseNumber: String,
     val vehiclePhoto: String,

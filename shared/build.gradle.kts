@@ -63,6 +63,10 @@ kotlin {
                 implementation("io.ktor:ktor-client-content-negotiation:2.3.1")
                 implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.1")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
+
+                //currency parser
+                implementation("io.fluidsonic.currency:fluid-currency:0.13.0")
+
             }
         }
         val commonTest by getting {

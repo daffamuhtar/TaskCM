@@ -44,7 +44,7 @@ import com.daffamuhtar.taskcm.theme.color_adhoc
 @Composable
 fun RepairListItem(
     repairItem: RepairItem,
-    onClick : () -> Unit,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Card(
@@ -180,22 +180,25 @@ fun RepairListItem(
 
                 Spacer(modifier = Modifier.height(10.dp))
 
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                ) {
-                    Icon(
-                        imageVector = Icons.Rounded.Payment,
-                        contentDescription = "Pay",
-                        modifier = Modifier.size(20.dp),
-                        tint = Color.Gray
-                    )
-                    Spacer(modifier = Modifier.width(10.dp))
+                repairItem.totalAfterTax?.let {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.Payment,
+                            contentDescription = "Pay",
+                            modifier = Modifier.size(20.dp),
+                            tint = Color.Gray
+                        )
+                        Spacer(modifier = Modifier.width(10.dp))
 
-                    Text(
-                        text = repairItem.totalAfterTax,
-                        modifier = Modifier.weight(1f)
-                    )
+
+                        Text(
+                            text = it,
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
                 }
             }
 

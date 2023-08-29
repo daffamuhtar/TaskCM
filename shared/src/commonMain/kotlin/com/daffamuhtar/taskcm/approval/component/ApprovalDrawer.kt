@@ -35,6 +35,8 @@ import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberDrawerState
@@ -42,6 +44,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -80,6 +83,8 @@ fun ApprovalAppDrawer(
     onEvent: (RepairListEvent) -> Unit,
 
     ) {
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scopeScaffold = rememberCoroutineScope()
 
     val approvalViewModel = getViewModel(Unit, viewModelFactory { ApprovalViewModel() })
     val uiState by approvalViewModel.uiState.collectAsState()
@@ -163,6 +168,7 @@ fun ApprovalAppDrawer(
         },
         drawerState = drawerState
     ) {
+
 
         Scaffold(
 
@@ -251,6 +257,8 @@ fun ApprovalAppDrawer(
         onEvent = onEvent,
         isOpen = state.isSelectedContactSheetOpen,
         selectedRepair = state.selectedContact,
+        snackbarHostState = snackbarHostState,
+        scope = scope,
     )
 
 }

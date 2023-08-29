@@ -169,7 +169,7 @@ private fun ContactTextField(
             shape = RoundedCornerShape(20.dp),
             modifier = Modifier.fillMaxWidth()
         )
-        if(error != null) {
+            if(error != null) {
             Text(
                 text = error,
                 color = MaterialTheme.colorScheme.error
