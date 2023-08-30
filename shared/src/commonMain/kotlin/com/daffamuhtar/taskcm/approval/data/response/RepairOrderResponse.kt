@@ -1,11 +1,10 @@
-package com.daffamuhtar.taskcm.approval.data
+package com.daffamuhtar.taskcm.approval.data.response
 
-import androidx.compose.ui.graphics.Color
-import kotlinx.serialization.SerialName
+import com.daffamuhtar.taskcm.approval.data.ProblemName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class RepairItem(
+data class RepairOrderResponse(
     val orderId: String,
     val SPKId: String?,
     val noteCheckFromMechanic: String,

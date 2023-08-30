@@ -4,8 +4,7 @@ import com.daffamuhtar.taskcm.approval.data.RepairDetailAfterCheckItem
 import com.daffamuhtar.taskcm.approval.data.RepairDetailInfo
 import com.daffamuhtar.taskcm.approval.data.RepairDetailPartListItem
 import com.daffamuhtar.taskcm.approval.data.RepairDetailPartTotalPrice
-import com.daffamuhtar.taskcm.approval.data.RepairItem
-import com.daffamuhtar.taskcm.approval.data.ResponseRefreshToken
+import com.daffamuhtar.taskcm.approval.data.model.RepairOrderModel
 import com.daffamuhtar.taskcm.approval.data.ResponseResult
 
 sealed interface RepairListEvent {
@@ -18,12 +17,15 @@ sealed interface RepairListEvent {
     class OnPhotoPicked(val bytes: ByteArray) : RepairListEvent
     object OnAddPhotoClicked : RepairListEvent
     object SaveContact : RepairListEvent
-    data class SelectRepairItem(val contact: RepairItem) : RepairListEvent
-    data class EditContact(val contact: RepairItem) : RepairListEvent
+    data class SelectRepairItem(val contact: RepairOrderModel) : RepairListEvent
+    data class EditContact(val contact: RepairOrderModel) : RepairListEvent
     object DeleteContact : RepairListEvent
 
 
 //    data class DataResponseRefreshToken(val responseRefreshToken: ResponseRefreshToken) : RepairListEvent
+
+    object OnLoadingRepairOrderList : RepairListEvent
+    data class DataRepairOrderList(val repairOrderModels: List<RepairOrderModel>) : RepairListEvent
 
     object OnLoadingRepairDetailInfo : RepairListEvent
     data class DataRepairDetailInfo(val repairDetailInfo: RepairDetailInfo) : RepairListEvent

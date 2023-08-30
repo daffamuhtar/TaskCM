@@ -7,7 +7,7 @@ import com.daffamuhtar.taskcm.approval.data.RepairDetailAfterCheckItem
 import com.daffamuhtar.taskcm.approval.data.RepairDetailInfo
 import com.daffamuhtar.taskcm.approval.data.RepairDetailPartListItem
 import com.daffamuhtar.taskcm.approval.data.RepairDetailPartTotalPrice
-import com.daffamuhtar.taskcm.approval.data.RepairItem
+import com.daffamuhtar.taskcm.approval.data.model.RepairOrderModel
 import com.daffamuhtar.taskcm.approval.data.ResponseRefreshToken
 import com.daffamuhtar.taskcm.approval.data.ResponseResult
 import com.daffamuhtar.taskcm.approval.utils.RepairListEvent
@@ -39,7 +39,7 @@ import kotlinx.coroutines.delay
 import kotlinx.serialization.json.Json
 
 data class ApprovalUiState(
-    val images: List<RepairItem> = emptyList(),
+    val images: List<RepairOrderModel> = emptyList(),
     val selectedCategory: String? = null,
     var isShowDetail: Boolean = false
 ) {
@@ -274,7 +274,7 @@ class ApprovalViewModel() : ViewModel() {
 
     val uiState = _uiState.asStateFlow()
     var token =
-        "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjIiLCJ1c2VybmFtZSI6IlVNLUJMT0ctOTk5OSIsImlhdCI6MTY5MzI3ODg2OCwiZXhwIjoxNjkzMzY1MjY4fQ.0PYTjW50PFqiPPdbzTdm7xHgZslvmjwjFANZBj0hOkQ"
+        "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjIiLCJ1c2VybmFtZSI6IlVNLUJMT0ctOTk5OSIsImlhdCI6MTY5MzM2Mzc4NSwiZXhwIjoxNjkzNDUwMTg1fQ.9AIB0A2Xz8Zb3iMz2WgUglpWk6BWKv84QvFRRS0wntc"
 
     private val httpClient = HttpClient {
 
@@ -382,10 +382,10 @@ class ApprovalViewModel() : ViewModel() {
     }
 
 
-    private suspend fun getRepairApprovalAdhoc(): List<RepairItem> {
+    suspend fun getRepairApprovalAdhoc(): List<RepairOrderModel> {
         val images = httpClient
             .get("https://api-staging-v10.fleetify.id/api/orders/waiting_approval_level_2?loggedGAId=GA-BLOG-3")
-            .body<List<RepairItem>>()
+            .body<List<RepairOrderModel>>()
         return images
     }
 

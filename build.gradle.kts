@@ -1,7 +1,7 @@
 buildscript {
     dependencies {
         classpath("com.squareup.sqldelight:gradle-plugin:1.5.5")
-        classpath("com.google.gms:google-services:4.3.15")
+//        classpath("com.google.gms:google-services:4.3.15")
     }
 }
 
@@ -11,6 +11,7 @@ plugins {
     id("com.android.library").version("8.1.0").apply(false)
     kotlin("android").version("1.8.20").apply(false)
     kotlin("multiplatform").version("1.8.20").apply(false)
+    id("com.google.gms.google-services") version "4.3.15" apply false
 }
 
 tasks.register("clean", Delete::class) {

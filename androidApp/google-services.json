@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "439773239286",
+    "project_id": "taskcm-ef32c",
+    "storage_bucket": "taskcm-ef32c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:439773239286:android:9b0fde108218c1cd6c59d7",
+        "android_client_info": {
+          "package_name": "com.daffamuhtar.taskcm.android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "439773239286-enrjt32ddf4hcsmkhe9e8dk6eheggp53.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDXcma-ao1g61EfvEFKnv1w1yJFtJc3zak"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "439773239286-enrjt32ddf4hcsmkhe9e8dk6eheggp53.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

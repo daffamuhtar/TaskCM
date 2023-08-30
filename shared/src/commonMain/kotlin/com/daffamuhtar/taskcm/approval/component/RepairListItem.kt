@@ -1,7 +1,6 @@
 package com.daffamuhtar.taskcm.approval.component
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,7 +12,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.History
 import androidx.compose.material.icons.rounded.HomeRepairService
 import androidx.compose.material.icons.rounded.LocalShipping
 import androidx.compose.material.icons.rounded.Payment
@@ -35,7 +33,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.daffamuhtar.taskcm.approval.data.RepairItem
+import com.daffamuhtar.taskcm.approval.data.model.RepairOrderModel
 import com.daffamuhtar.taskcm.theme.color_blue
 import com.daffamuhtar.taskcm.theme.color_bluesoft
 import com.daffamuhtar.taskcm.theme.color_adhoc
@@ -43,7 +41,7 @@ import com.daffamuhtar.taskcm.theme.color_adhoc
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RepairListItem(
-    repairItem: RepairItem,
+    repairOrderModel: RepairOrderModel,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -96,7 +94,7 @@ fun RepairListItem(
                     )
 
                     Text(
-                        text = repairItem.orderId,
+                        text = repairOrderModel.orderId,
                         style = MaterialTheme.typography.bodySmall,
                         color = Color.Gray
                     )
@@ -126,7 +124,7 @@ fun RepairListItem(
 
 
                     Text(
-                        text = "${repairItem.vehicleName}\n${repairItem.vehicleLicenseNumber}",
+                        text = "${repairOrderModel.vehicleName}\n${repairOrderModel.vehicleLicenseNumber}",
                         modifier = Modifier.weight(1f),
 //                    style = MaterialTheme.typography.bodySmall
 
@@ -148,7 +146,7 @@ fun RepairListItem(
                         ) {
 
                             Text(
-                                text = repairItem.vehicleDistrict,
+                                text = repairOrderModel.vehicleDistrict,
                                 style = MaterialTheme.typography.bodyMedium,
                                 textAlign = TextAlign.Center
                             )
@@ -173,14 +171,14 @@ fun RepairListItem(
                     Spacer(modifier = Modifier.width(10.dp))
 
                     Text(
-                        text = repairItem.workshopName,
+                        text = repairOrderModel.workshopName,
                         modifier = Modifier.weight(1f)
                     )
                 }
 
                 Spacer(modifier = Modifier.height(10.dp))
 
-                repairItem.totalAfterTax?.let {
+                repairOrderModel.totalAfterTax?.let {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()

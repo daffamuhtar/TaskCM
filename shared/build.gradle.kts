@@ -3,7 +3,7 @@ plugins {
     id("com.android.library")
     id("org.jetbrains.compose")
     id("com.squareup.sqldelight")
-
+//    id("com.google.gms.google-services")
     kotlin("plugin.serialization") version "1.8.21"
 }
 
@@ -63,10 +63,6 @@ kotlin {
                 implementation("io.ktor:ktor-client-content-negotiation:2.3.1")
                 implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.1")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
-
-                //currency parser
-                implementation("io.fluidsonic.currency:fluid-currency:0.13.0")
-
             }
         }
         val commonTest by getting {
@@ -122,7 +118,7 @@ android {
     namespace = "com.daffamuhtar.taskcm"
     compileSdk = 33
     defaultConfig {
-        minSdk = 24
+        minSdk = 26
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17

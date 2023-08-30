@@ -51,7 +51,7 @@ import androidx.compose.ui.unit.sp
 import com.daffamuhtar.taskcm.approval.ApprovalViewModel
 import com.daffamuhtar.taskcm.approval.data.RepairDetailAfterCheckItem
 import com.daffamuhtar.taskcm.approval.data.RepairDetailPartListItem
-import com.daffamuhtar.taskcm.approval.data.RepairItem
+import com.daffamuhtar.taskcm.approval.data.model.RepairOrderModel
 import com.daffamuhtar.taskcm.contacts.domain.Contact
 import com.daffamuhtar.taskcm.approval.utils.RepairListEvent
 import com.daffamuhtar.taskcm.approval.utils.RepairListState
@@ -69,7 +69,7 @@ fun RepairDetailSheet(
     viewModel: ApprovalViewModel,
     state: RepairListState,
     isOpen: Boolean,
-    selectedRepair: RepairItem?,
+    selectedRepair: RepairOrderModel?,
     onEvent: (RepairListEvent) -> Unit,
     modifier: Modifier = Modifier,
     snackbarHostState: SnackbarHostState,
@@ -224,6 +224,7 @@ fun RepairDetailSheet(
                                 }
 
                                 state.repairDetailPartListItems?.let {
+                                    println("CloudMessage - Partlist donee")
 
                                     Text(
                                         text = "Daftar Part",

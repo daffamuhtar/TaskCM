@@ -3,16 +3,12 @@ package com.daffamuhtar.taskcm
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import com.daffamuhtar.taskcm.approval.ApprovalScreen
 import com.daffamuhtar.taskcm.approval.ApprovalViewModel
-import com.daffamuhtar.taskcm.approval.component.ApprovalAppDrawer
-import com.daffamuhtar.taskcm.contacts.data.SqlDelightContactDataSource
-import com.daffamuhtar.taskcm.contacts.presentation.ContactListScreen
-import com.daffamuhtar.taskcm.contacts.presentation.ContactListViewModel
 //import com.daffamuhtar.taskcm.contacts.presentation.bird.BirdAppTheme
 //import com.daffamuhtar.taskcm.contacts.presentation.bird.BirdsPage
 //import com.daffamuhtar.taskcm.contacts.presentation.bird.com.daffamuhtar.taskcm.contacts.presentation.bird.BirdsViewModel
@@ -24,10 +20,11 @@ import dev.icerock.moko.mvvm.compose.viewModelFactory
 
 @Composable
 fun App(
-    darkTheme : Boolean,
-    dynamicColor : Boolean,
-    appModule :AppModule,
+    darkTheme: Boolean,
+    dynamicColor: Boolean,
+    appModule: AppModule,
     imagePicker: ImagePicker,
+    fcmToken: String?,
 ) {
 
     ContactsTheme(
@@ -58,6 +55,7 @@ fun App(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ){
+
 //            ContactListScreen(
 //                state = state,
 //                newContact = viewModel.newContact,
@@ -65,9 +63,10 @@ fun App(
 //                imagePicker = imagePicker
 //            )
 
-            ApprovalAppDrawer(
+            ApprovalScreen(
                 state = state2,
                 onEvent = viewModel2::onEvent,
+                fcmToken = fcmToken
             )
 
         }

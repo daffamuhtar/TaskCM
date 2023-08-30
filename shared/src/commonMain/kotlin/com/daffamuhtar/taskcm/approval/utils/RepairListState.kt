@@ -4,12 +4,12 @@ import com.daffamuhtar.taskcm.approval.data.RepairDetailAfterCheckItem
 import com.daffamuhtar.taskcm.approval.data.RepairDetailInfo
 import com.daffamuhtar.taskcm.approval.data.RepairDetailPartListItem
 import com.daffamuhtar.taskcm.approval.data.RepairDetailPartTotalPrice
-import com.daffamuhtar.taskcm.approval.data.RepairItem
+import com.daffamuhtar.taskcm.approval.data.model.RepairOrderModel
 import com.daffamuhtar.taskcm.approval.data.ResponseResult
 
 
 data class RepairListState(
-    val repairItemList : List<RepairItem> = emptyList(),
+    val repairOrderModelList : List<RepairOrderModel> = emptyList(),
     val repairDetailInfoList : List<RepairDetailInfo> = emptyList(),
 
     val isLoadingGetRepairDetailInfoAdhoc: Boolean = false,
@@ -34,7 +34,7 @@ data class RepairListState(
     val approveRepairOrderResponseResult: ResponseResult? = null,
 
 
-    val selectedContact: RepairItem? = null,
+    val selectedContact: RepairOrderModel? = null,
     val isAddContactSheetOpen: Boolean = false,
     val isSelectedContactSheetOpen: Boolean = false,
     val firstNameError: String? = null,

@@ -2,7 +2,6 @@ package com.daffamuhtar.taskcm
 
 import androidx.compose.ui.interop.LocalUIViewController
 import androidx.compose.ui.window.ComposeUIViewController
-import com.daffamuhtar.taskcm.core.presentation.ImagePicker
 import com.daffamuhtar.taskcm.core.presentation.ImagePickerFactory
 import com.daffamuhtar.taskcm.di.AppModule
 import platform.UIKit.UIScreen
@@ -17,6 +16,7 @@ fun MainViewController () = ComposeUIViewController{
         darkTheme = isDarkTheme,
         dynamicColor = true,
         appModule = AppModule(),
-        imagePicker = ImagePickerFactory(LocalUIViewController.current).createPicker()
+        imagePicker = ImagePickerFactory(LocalUIViewController.current).createPicker(),
+        fcmToken = null
     )
 }

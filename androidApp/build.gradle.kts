@@ -1,7 +1,8 @@
 plugins {
     id("com.android.application")
-    kotlin("android")
     id("org.jetbrains.compose")
+    id("com.google.gms.google-services")
+    kotlin("android")
 }
 
 android {
@@ -9,7 +10,7 @@ android {
     compileSdk = 33
     defaultConfig {
         applicationId = "com.daffamuhtar.taskcm.android"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 33
         versionCode = 1
         versionName = "1.10"
@@ -47,4 +48,11 @@ dependencies {
     implementation("androidx.compose.foundation:foundation:1.4.3")
     implementation("androidx.compose.material:material:1.4.3")
     implementation("androidx.activity:activity-compose:1.7.1")
+
+    implementation(platform("com.google.firebase:firebase-bom:32.2.3"))
+//    implementation("com.google.firebase:firebase-analytics-ktx:21.3.0.")
+    implementation("com.google.firebase:firebase-messaging-ktx:23.2.1")
+//
+//    //Preference DataStore
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
 }
