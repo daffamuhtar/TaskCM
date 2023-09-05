@@ -1,5 +1,6 @@
 package com.daffamuhtar.taskcm.contacts.presentation.bird
 
+import com.daffamuhtar.taskcm.approval.data.TokenInfo
 import dev.icerock.moko.mvvm.viewmodel.ViewModel
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -13,11 +14,14 @@ import kotlinx.coroutines.launch
 import com.daffamuhtar.taskcm.contacts.presentation.bird.model.BirdImage
 import io.ktor.client.plugins.auth.Auth
 import io.ktor.client.plugins.auth.providers.BearerTokens
+import io.ktor.client.plugins.auth.providers.RefreshTokensParams
 import io.ktor.client.plugins.auth.providers.bearer
 import io.ktor.client.plugins.logging.DEFAULT
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
+import io.ktor.client.request.forms.submitForm
+import io.ktor.http.parameters
 import kotlinx.serialization.json.Json
 
 data class BirdsUiState(
@@ -31,9 +35,22 @@ data class BirdsUiState(
 class BirdsViewModel : ViewModel() {
     private val _uiState = MutableStateFlow<BirdsUiState>(BirdsUiState())
     val uiState = _uiState.asStateFlow()
-    var token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjIiLCJ1c2VybmFtZSI6IlVNLUJMT0ctOTk5OSIsImlhdCI6MTY5Mjg0MzUwMiwiZXhwIjoxNjkyOTI5OTAyfQ.LF_GD6uOzavFcGlUZKxfn8tnPFC5HOGKTVp9y2rcQDQ"
+    var token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjYiLCJ1c2VybmFtZSI6ImZsZWV0MS10ZXN0aW5nIiwiaWF0IjoxNjkzNzk0NTQ0LCJleHAiOjE2OTM4Mzc3NDR9.-BkmvkCqoY_ukCjYVJXegCurviK-lGipOMlPeaOLrNM"
 
     private val httpClient = HttpClient {
+
+        install(Auth) {
+            bearer {
+                loadTokens {
+                    // Load tokens from a local storage and return them as the 'BearerTokens' instance
+                    BearerTokens(token, token)
+                }
+                refreshTokens {
+                    BearerTokens(token, token)
+
+                }
+            }
+        }
 
         install(Logging) {
             logger = Logger.DEFAULT
@@ -47,14 +64,7 @@ class BirdsViewModel : ViewModel() {
             })
         }
 
-        install(Auth) {
-            bearer {
-                refreshTokens { // this: RefreshTokensParams
-                    // Refresh tokens and return them as the 'BearerTokens' instance
-                    BearerTokens(token, token)
-                }
-            }
-        }
+
 
     }
 

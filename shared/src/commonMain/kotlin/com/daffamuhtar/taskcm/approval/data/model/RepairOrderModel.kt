@@ -1,14 +1,16 @@
 package com.daffamuhtar.taskcm.approval.data.model
 
-import com.daffamuhtar.taskcm.approval.data.ProblemName
+import com.daffamuhtar.taskcm.approval.data.response.ProblemName
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class RepairOrderModel(
     val orderId: String,
     val SPKId: String?,
-    val noteCheckFromMechanic: String,
+    val noteCheckFromMechanic: String?,
     val offerId: String,
+    val previousOfferId: String?,
+    val correctionReason: String?,
     val problemName: List<ProblemName>,
     val scheduledDate: String,
     val stageName: String,

@@ -6,20 +6,35 @@ import com.daffamuhtar.taskcm.approval.data.RepairDetailPartListItem
 import com.daffamuhtar.taskcm.approval.data.RepairDetailPartTotalPrice
 import com.daffamuhtar.taskcm.approval.data.model.RepairOrderModel
 import com.daffamuhtar.taskcm.approval.data.ResponseResult
+import com.daffamuhtar.taskcm.approval.data.response.LoginResponse
 
 
 data class RepairListState(
-    val repairOrderModelList : List<RepairOrderModel> = emptyList(),
-    val repairDetailInfoList : List<RepairDetailInfo> = emptyList(),
+
+
+    val isLoadingLogin: Boolean = false,
+    val loginResponse: LoginResponse? = null,
+
+    val loggedUserId: String? = loginResponse?.loggedGAId ?: "GA-BLOG-3",
+//    val token: String = "GA-BLOG-2",
+//    val loggedUserId: String = "GA-BLOG-2",
+
+//    ==========================
+    val repairOrderModelList: List<RepairOrderModel> = emptyList(),
+
+    val isLoadingRepairOrderList: Boolean = false,
+    val repairOrderModels: List<RepairOrderModel>? = null,
+
+    //============
 
     val isLoadingGetRepairDetailInfoAdhoc: Boolean = false,
     val repairDetailInfo: RepairDetailInfo? = null,
 
     val isLoadingGetRepairDetailAfterCheck: Boolean = false,
-    val repairDetailAfterCheckItems: List<RepairDetailAfterCheckItem> ? = null,
+    val repairDetailAfterCheckItems: List<RepairDetailAfterCheckItem>? = null,
 
     val isLoadingGetRepairDetailPartList: Boolean = false,
-    val repairDetailPartListItems: List<RepairDetailPartListItem> ? = null,
+    val repairDetailPartListItems: List<RepairDetailPartListItem>? = null,
 
     val isLoadingGetRepairDetailPartTotalPrice: Boolean = false,
     val repairDetailPartTotalPrice: RepairDetailPartTotalPrice? = null,
@@ -33,10 +48,18 @@ data class RepairListState(
     val isLoadingPostApproveRepairOrder: Boolean = false,
     val approveRepairOrderResponseResult: ResponseResult? = null,
 
-
-    val selectedContact: RepairOrderModel? = null,
+    val selectedRepairOrderModel: RepairOrderModel? = null,
     val isAddContactSheetOpen: Boolean = false,
+
     val isSelectedContactSheetOpen: Boolean = false,
+
+    val isApproveConfirmationSheetOpen: Boolean = false,
+
+    val isRejectConfirmationSheetOpen: Boolean = false,
+
+
+    val rejectionNoteError: String? = null,
+
     val firstNameError: String? = null,
     val lastNameError: String? = null,
     val emailError: String? = null,

@@ -1,6 +1,5 @@
 package com.daffamuhtar.taskcm.approval.data.response
 
-import com.daffamuhtar.taskcm.approval.data.ProblemName
 import kotlinx.serialization.Serializable
 
 @Serializable

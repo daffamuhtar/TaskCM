@@ -1,5 +1,8 @@
 package com.daffamuhtar.taskcm.contacts.presentation.components
 
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -55,6 +58,14 @@ fun ContactDetailSheet(
 ) {
     BottomSheetFromWish(
         visible = isOpen,
+        enterTransition = slideInVertically(
+            animationSpec = tween(durationMillis = 300),
+            initialOffsetY = { it }
+        ),
+        exitTransition = slideOutVertically(
+            animationSpec = tween(durationMillis = 300),
+            targetOffsetY = { it }
+        ),
         modifier = modifier.fillMaxWidth()
     ) {
         Box(

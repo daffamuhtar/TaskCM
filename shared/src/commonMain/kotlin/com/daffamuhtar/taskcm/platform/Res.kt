@@ -10,6 +10,10 @@ object Res {
         val ic_instagram = "drawable/ic_instagram.xml"
         val ic_send = "drawable/ic_send.xml"
         val ic_twitter = "drawable/ic_twitter.xml"
+
+        val ic_assignment = "drawable/baseline_assignment_24.xml"
+        val ic_assignment_approve = "drawable/baseline_assignment_turned_in_24.xml"
+        val ic_assignment_reject = "drawable/baseline_assignment_late_24.xml"
     }
 
     object string {

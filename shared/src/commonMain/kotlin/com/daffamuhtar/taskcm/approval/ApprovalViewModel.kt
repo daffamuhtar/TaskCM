@@ -1,6 +1,7 @@
 package com.daffamuhtar.taskcm.approval
 
 import com.daffamuhtar.taskcm.approval.data.DataPostApproveRepairOrder
+import com.daffamuhtar.taskcm.approval.data.DataPostLogin
 import com.daffamuhtar.taskcm.approval.data.DataPostRefreshToken
 import com.daffamuhtar.taskcm.approval.data.DataPostRejectRepairOrder
 import com.daffamuhtar.taskcm.approval.data.RepairDetailAfterCheckItem
@@ -10,6 +11,9 @@ import com.daffamuhtar.taskcm.approval.data.RepairDetailPartTotalPrice
 import com.daffamuhtar.taskcm.approval.data.model.RepairOrderModel
 import com.daffamuhtar.taskcm.approval.data.ResponseRefreshToken
 import com.daffamuhtar.taskcm.approval.data.ResponseResult
+import com.daffamuhtar.taskcm.approval.data.response.LoginResponse
+import com.daffamuhtar.taskcm.approval.data.response.RepairOrderAdditionalPartRequestResponse
+import com.daffamuhtar.taskcm.approval.data.response.RepairOrderResponse
 import com.daffamuhtar.taskcm.approval.utils.RepairListEvent
 import com.daffamuhtar.taskcm.approval.utils.RepairListState
 import dev.icerock.moko.mvvm.viewmodel.ViewModel
@@ -34,23 +38,24 @@ import io.ktor.client.request.post
 import io.ktor.client.request.put
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
+import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import kotlinx.coroutines.delay
 import kotlinx.serialization.json.Json
 
-data class ApprovalUiState(
-    val images: List<RepairOrderModel> = emptyList(),
-    val selectedCategory: String? = null,
-    var isShowDetail: Boolean = false
-) {
-    //    val categories = images.map { it.problemStage }.toSet()
-//    val selectedImages = images.filter { it.problemStage == selectedCategory }
-    var valueShowDetail = isShowDetail
-}
+//data class ApprovalUiState(
+//    val repairOrderModels: List<RepairOrderModel> = emptyList(),
+//    val selectedCategory: String? = null,
+//    var isShowDetail: Boolean = false
+//) {
+//    //    val categories = images.map { it.problemStage }.toSet()
+////    val selectedImages = images.filter { it.problemStage == selectedCategory }
+//    var valueShowDetail = isShowDetail
+//}
 
 class ApprovalViewModel() : ViewModel() {
 
-    private val _uiState = MutableStateFlow<ApprovalUiState>(ApprovalUiState())
+    //    private val _uiState = MutableStateFlow<ApprovalUiState>(ApprovalUiState())
     private val _state = MutableStateFlow(RepairListState())
 
     val state = _state.asStateFlow()
@@ -67,13 +72,20 @@ class ApprovalViewModel() : ViewModel() {
                             firstNameError = null,
                             lastNameError = null,
                             emailError = null,
-                            phoneNumberError = null
+                            phoneNumberError = null,
                         )
                     }
                     delay(300L) // Animation delay
                     _state.update {
                         it.copy(
-                            selectedContact = null
+                            selectedRepairOrderModel = null,
+                            repairDetailInfo = null,
+                            repairDetailAfterCheckItems = null,
+                            repairDetailPartListItems = null,
+                            repairDetailPartTotalPrice = null,
+                            repairDetailWorkshopOfferNote = null,
+                            approveRepairOrderResponseResult = null,
+                            isApproveConfirmationSheetOpen = false,
                         )
                     }
                 }
@@ -83,8 +95,93 @@ class ApprovalViewModel() : ViewModel() {
             is RepairListEvent.SelectRepairItem -> {
                 _state.update {
                     it.copy(
-                        selectedContact = event.contact,
+                        selectedRepairOrderModel = event.repairOrderModel,
                         isSelectedContactSheetOpen = true
+                    )
+                }
+            }
+
+            is RepairListEvent.DoApproveRepairOrder -> {
+                _state.update {
+                    it.copy(
+                        isApproveConfirmationSheetOpen = true
+                    )
+                }
+            }
+
+            is RepairListEvent.DismissApproveRepairOrder -> {
+                viewModelScope.launch {
+                    _state.update {
+                        it.copy(
+                            isApproveConfirmationSheetOpen = false,
+                        )
+                    }
+                }
+            }
+
+            is RepairListEvent.DoRejectRepairOrder -> {
+                _state.update {
+                    it.copy(
+                        isRejectConfirmationSheetOpen = true
+                    )
+                }
+            }
+
+            is RepairListEvent.DismissRejectRepairOrder -> {
+                viewModelScope.launch {
+                    _state.update {
+                        it.copy(
+                            isRejectConfirmationSheetOpen = false,
+                        )
+                    }
+                }
+            }
+
+            is RepairListEvent.OnLoadingRepairOrderList -> {
+                viewModelScope.launch {
+                    _state.update {
+                        it.copy(
+                            isLoadingRepairOrderList = true,
+                            repairOrderModels = null
+                        )
+                    }
+
+                    var result: List<RepairOrderModel> = emptyList()
+                    _state.value.loggedUserId?.let {
+                        when (event.int) {
+                            0 -> {
+                                result = getRepairOrderAdhoc(it)
+                            }
+
+                            1 -> {
+
+                                result =
+                                    getRepairOrderAdditionalPartReqeustAdhoc(
+                                        it,
+                                        null
+                                    )
+                            }
+
+                            2 -> {
+                                result = getRepairOrderAdhoc(it)
+                            }
+
+                            else -> {
+                                result = getRepairOrderAdhoc(it)
+                            }
+                        }
+                    }
+
+                    onEvent(RepairListEvent.DataRepairOrderList(result))
+
+                }
+            }
+
+            is RepairListEvent.DataRepairOrderList -> {
+                _state.update {
+                    it.copy(
+                        isLoadingRepairOrderList = false,
+                        repairOrderModels = event.repairOrderModels
                     )
                 }
             }
@@ -96,13 +193,20 @@ class ApprovalViewModel() : ViewModel() {
                             isLoadingGetRepairDetailInfoAdhoc = true
                         )
                     }
-                    val repairDetailInfo = getRepairDetailInfoAdhoc()[0]
+                    _state.value.selectedRepairOrderModel?.let {
+                        val repairDetailInfo = getRepairDetailInfoAdhoc(it.orderId)[0]
+                        onEvent(RepairListEvent.DataRepairDetailInfo(repairDetailInfo))
+                    } ?: run {
+                        _state.update {
+                            it.copy(
+                                isLoadingGetRepairDetailInfoAdhoc = false
+                            )
+                        }
+                    }
 
-                    onEvent(RepairListEvent.DataRepairDetailInfo(repairDetailInfo))
 
                 }
             }
-
 
             is RepairListEvent.DataRepairDetailInfo -> {
                 _state.update {
@@ -120,9 +224,22 @@ class ApprovalViewModel() : ViewModel() {
                             isLoadingGetRepairDetailAfterCheck = true
                         )
                     }
-                    val repairDetailAfterCheckItems = getRepairDetailAfterCheck()
 
-                    onEvent(RepairListEvent.DataRepairDetailAfterCheck(repairDetailAfterCheckItems))
+                    _state.value.selectedRepairOrderModel?.let {
+                        val repairDetailAfterCheckItems = getRepairDetailAfterCheck(it.orderId)
+                        onEvent(
+                            RepairListEvent.DataRepairDetailAfterCheck(
+                                repairDetailAfterCheckItems
+                            )
+                        )
+
+                    } ?: run {
+                        _state.update {
+                            it.copy(
+                                isLoadingGetRepairDetailAfterCheck = false
+                            )
+                        }
+                    }
 
                 }
             }
@@ -144,9 +261,19 @@ class ApprovalViewModel() : ViewModel() {
                             isLoadingGetRepairDetailPartList = true
                         )
                     }
-                    val repairDetailPartListItems = getRepairDetailPartList()
+                    _state.value.selectedRepairOrderModel?.let {
+                        val repairDetailPartListItems = getRepairDetailPartList(it.offerId)
 
-                    onEvent(RepairListEvent.DataRepairDetailPartList(repairDetailPartListItems))
+                        onEvent(RepairListEvent.DataRepairDetailPartList(repairDetailPartListItems))
+
+                    } ?: run {
+                        _state.update {
+                            it.copy(
+                                isLoadingGetRepairDetailPartList = false
+                            )
+                        }
+                    }
+
 
                 }
             }
@@ -168,9 +295,23 @@ class ApprovalViewModel() : ViewModel() {
                             isLoadingGetRepairDetailPartTotalPrice = true
                         )
                     }
-                    val repairDetailPartListItems = getRepairDetailPartTotalPrice()
 
-                    onEvent(RepairListEvent.DataRepairDetailPartTotalPrice(repairDetailPartListItems))
+                    _state.value.selectedRepairOrderModel?.let {
+                        val repairDetailPartListItems = getRepairDetailPartTotalPrice(it.offerId)
+
+                        onEvent(
+                            RepairListEvent.DataRepairDetailPartTotalPrice(
+                                repairDetailPartListItems
+                            )
+                        )
+
+                    } ?: run {
+                        _state.update {
+                            it.copy(
+                                isLoadingGetRepairDetailPartTotalPrice = false
+                            )
+                        }
+                    }
 
                 }
             }
@@ -192,14 +333,23 @@ class ApprovalViewModel() : ViewModel() {
                             isLoadingGetRepairDetailWorkshopOfferNote = true
                         )
                     }
-                    val repairDetailWorkshopOfferNote = getRepairDetailWorkshopOfferNote()
-
-                    onEvent(
-                        RepairListEvent.DataRepairDetailWorkshopOfferNote(
-                            repairDetailWorkshopOfferNote
-                        )
-                    )
-
+//
+//                    _state.value.selectedRepairOrderModel?.let {
+//                        val repairDetailWorkshopOfferNote =
+//                            getRepairDetailWorkshopOfferNote(it.orderId)
+//
+//                        onEvent(
+//                            RepairListEvent.DataRepairDetailWorkshopOfferNote(
+//                                repairDetailWorkshopOfferNote
+//                            )
+//                        )
+//                    } ?: run {
+//                        _state.update {
+//                            it.copy(
+//                                isLoadingGetRepairDetailPartTotalPrice = false
+//                            )
+//                        }
+//                    }
                 }
             }
 
@@ -221,12 +371,24 @@ class ApprovalViewModel() : ViewModel() {
                         )
                     }
 
-                    val response = rejectRepair(
-                        offerId = event.offerId,
-                        orderId = event.orderId
-                    )
+//                    val response = rejectRepair(
+//                        userId = _state.value.loggedUserId,
+//                        offerId = event.offerId,
+//                        orderId = event.orderId,
+//                        rejectionNote = event.rejectionNote
+//                    )
+//                    onEvent(RepairListEvent.DataResponseApproveRepairOrder(response))
 
-                    onEvent(RepairListEvent.DataResponseRejectRepairOrder(response))
+                    delay(3000) // Animation delay
+
+                    onEvent(
+                        RepairListEvent.DataResponseRejectRepairOrder(
+                            responseResult = ResponseResult(
+                                true,
+                                "message"
+                            )
+                        )
+                    )
 
                 }
             }
@@ -234,7 +396,10 @@ class ApprovalViewModel() : ViewModel() {
             is RepairListEvent.DataResponseRejectRepairOrder -> {
                 _state.update {
                     it.copy(
+                        isSelectedContactSheetOpen = false,
+                        selectedRepairOrderModel = null,
                         isLoadingPostRejectRepairOrder = false,
+                        isRejectConfirmationSheetOpen = false,
                         rejectRepairOrderResponseResult = event.responseResult
                     )
                 }
@@ -248,20 +413,46 @@ class ApprovalViewModel() : ViewModel() {
                         )
                     }
 
-                    val response = approveRepairOrder(
-                        offerId = event.offerId,
-                        orderId = event.orderId
+//                    _state.value.selectedRepairOrderModel?.let {
+//                        val response = approveRepairOrder(
+//                            userId = _state.value.loggedUserId,
+//                            offerId = event.offerId,
+//                            orderId = event.orderId,
+//                        )
+//
+//                        onEvent(RepairListEvent.DataResponseApproveRepairOrder(response))
+//
+//                    } ?: run {
+//                        _state.update {
+//                            it.copy(
+//                                isLoadingGetRepairDetailPartTotalPrice = false
+//                            )
+//                        }
+//                    }
+
+                    delay(3000) // Animation delay
+
+                    onEvent(
+                        RepairListEvent.DataResponseApproveRepairOrder(
+                            responseResult = ResponseResult(
+                                true,
+                                "message"
+                            )
+                        )
                     )
 
-                    onEvent(RepairListEvent.DataResponseApproveRepairOrder(response))
 
                 }
             }
 
             is RepairListEvent.DataResponseApproveRepairOrder -> {
+
                 _state.update {
                     it.copy(
+                        isSelectedContactSheetOpen = false,
+                        selectedRepairOrderModel = null,
                         isLoadingPostApproveRepairOrder = false,
+                        isApproveConfirmationSheetOpen = false,
                         approveRepairOrderResponseResult = event.responseResult
                     )
                 }
@@ -272,15 +463,13 @@ class ApprovalViewModel() : ViewModel() {
     }
 
 
-    val uiState = _uiState.asStateFlow()
-    var token =
-        "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjIiLCJ1c2VybmFtZSI6IlVNLUJMT0ctOTk5OSIsImlhdCI6MTY5MzM2Mzc4NSwiZXhwIjoxNjkzNDUwMTg1fQ.9AIB0A2Xz8Zb3iMz2WgUglpWk6BWKv84QvFRRS0wntc"
+    //    val uiState = _uiState.asStateFlow()
 
     private val httpClient = HttpClient {
 
         install(HttpTimeout) {
-            requestTimeoutMillis = 100000
-            connectTimeoutMillis = 100000
+            requestTimeoutMillis = 10000
+            connectTimeoutMillis = 10000
         }
 
         install(Logging) {
@@ -299,43 +488,74 @@ class ApprovalViewModel() : ViewModel() {
         }
 
         install(Auth) {
+            val token =
+                "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjYiLCJ1c2VybmFtZSI6ImZsZWV0MS10ZXN0aW5nIiwiaWF0IjoxNjkzODA0ODI1LCJleHAiOjE2OTM4NDgwMjV9.AiS-flYIXQBWJLlK4QgYLTmT3AOmx2Vu4ZH1Ra8hffQ"
+
             bearer {
                 refreshTokens { // this: RefreshTokensParams
                     // Refresh tokens and return them as the 'BearerTokens' instance
                     BearerTokens(accessToken = token, refreshToken = token)
                 }
+
+                loadTokens {
+                    BearerTokens(
+                        accessToken = token,
+                        refreshToken = token
+                    )
+                }
+
             }
         }
 
     }
 
     init {
-        updateImages()
+        onEvent(RepairListEvent.OnLoadingRepairOrderList(0))
+
+//        updateImages()
     }
 
     override fun onCleared() {
         httpClient.close()
     }
 
-    fun selectCategory(category: String) {
-        _uiState.update {
-            it.copy(selectedCategory = category)
-        }
-    }
+//    fun selectCategory(category: String) {
+//        _uiState.update {
+//            it.copy(selectedCategory = category)
+//        }
+//    }
+//
+//    fun showDetail(show: Boolean) {
+//        _uiState.update {
+//            it.copy(isShowDetail = show)
+//        }
+//    }
+//
+//    fun updateImages() {
+//        viewModelScope.launch {
+//            val images = getRepairOrderAdhoc()
+//            _uiState.update {
+//                it.copy(repairOrderModels = images)
+//            }
+//        }
+//    }
 
-    fun showDetail(show: Boolean) {
-        _uiState.update {
-            it.copy(isShowDetail = show)
-        }
-    }
+    suspend fun login(
+        username: String,
+        password: String,
+    ): LoginResponse {
+        val response = httpClient
+            .put("https://api-staging-v10.fleetify.id/api/auth/login") {
+                contentType(ContentType.Application.Json)
+                setBody(
+                    DataPostLogin(
+                        username = username,
+                        password = password,
+                    )
+                )
+            }.body<LoginResponse>()
 
-    fun updateImages() {
-        viewModelScope.launch {
-            val images = getRepairApprovalAdhoc()
-            _uiState.update {
-                it.copy(images = images)
-            }
-        }
+        return response
     }
 
     suspend fun refreshToken(): ResponseRefreshToken {
@@ -348,16 +568,21 @@ class ApprovalViewModel() : ViewModel() {
         return images
     }
 
-    suspend fun rejectRepair(offerId: String, orderId: String): ResponseResult {
+    suspend fun rejectRepair(
+        userId: String,
+        offerId: String,
+        orderId: String,
+        rejectionNote: String
+    ): ResponseResult {
         val response = httpClient
             .put("https://api-staging-v10.fleetify.id/api/orders/not_approve_order_any_level") {
                 contentType(ContentType.Application.Json)
                 setBody(
                     DataPostRejectRepairOrder(
-                        loggedGAId = "GA-BLOG-2",
+                        loggedGAId = userId,
                         offerId = offerId,
                         orderId = orderId,
-                        rejectionNote = "Tolak ya"
+                        rejectionNote = rejectionNote
                     )
                 )
             }.body<ResponseResult>()
@@ -365,13 +590,17 @@ class ApprovalViewModel() : ViewModel() {
         return response
     }
 
-    suspend fun approveRepairOrder(offerId: String, orderId: String): ResponseResult {
+    suspend fun approveRepairOrder(
+        userId: String,
+        offerId: String,
+        orderId: String
+    ): ResponseResult {
         val response = httpClient
             .put("https://api-staging-v10.fleetify.id/api/orders/approve_level_1") {
                 contentType(ContentType.Application.Json)
                 setBody(
                     DataPostApproveRepairOrder(
-                        loggedGAId = "GA-BLOG-2",
+                        loggedGAId = userId,
                         offerId = offerId,
                         orderId = orderId,
                     )
@@ -381,46 +610,141 @@ class ApprovalViewModel() : ViewModel() {
         return response
     }
 
+    suspend fun getRepairOrderAdhoc(userId: String): List<RepairOrderModel> {
+        val result = httpClient
+            .get("https://api-staging-v10.fleetify.id/api/orders/waiting_approval_level_1?loggedGAId=${userId}")
 
-    suspend fun getRepairApprovalAdhoc(): List<RepairOrderModel> {
-        val images = httpClient
-            .get("https://api-staging-v10.fleetify.id/api/orders/waiting_approval_level_2?loggedGAId=GA-BLOG-3")
-            .body<List<RepairOrderModel>>()
-        return images
+        return if (result.status == HttpStatusCode.OK) {
+            setResultRepairOrder(result.body<List<RepairOrderResponse>>())
+
+        } else {
+
+            setResultRepairOrder(emptyList())
+
+        }
+
+
     }
 
-    suspend fun getRepairDetailInfoAdhoc(): List<RepairDetailInfo> {
+    suspend fun getRepairOrderAdditionalPartReqeustAdhoc(
+        userId: String,
+        query: String?
+    ): List<RepairOrderModel> {
+        val result = httpClient
+            .get("https://api-staging-v10.fleetify.id/api/orders/waiting_approval_level_1_correction_offer?loggedGAId=${userId}&query=${query}")
+
+        return if (result.status == HttpStatusCode.OK) {
+            setResultRepairOrderAdditionalPartRequest(result.body<List<RepairOrderAdditionalPartRequestResponse>>())
+
+        } else {
+
+            setResultRepairOrder(emptyList())
+
+        }
+    }
+
+    suspend fun getRepairDetailInfoAdhoc(orderId: String): List<RepairDetailInfo> {
         val detailOrder = httpClient
-            .get("https://api-staging-v10.fleetify.id/api/orders/order_info?orderId=ORD/23112022/215932/MBA/VHC-BLOG-2")
+            .get("https://api-staging-v10.fleetify.id/api/orders/order_info?orderId=${orderId}")
             .body<List<RepairDetailInfo>>()
         return detailOrder
     }
 
-    suspend fun getRepairDetailAfterCheck(): List<RepairDetailAfterCheckItem> {
+    suspend fun getRepairDetailAfterCheck(orderId: String): List<RepairDetailAfterCheckItem> {
         val repairDetailAfterCheckItems = httpClient
-            .get("https://api-staging-v10.fleetify.id/api/orders/check_result_photos?orderId=ORD/23112022/215932/MBA/VHC-BLOG-2")
+            .get("https://api-staging-v10.fleetify.id/api/orders/check_result_photos?orderId=${orderId}")
             .body<List<RepairDetailAfterCheckItem>>()
         return repairDetailAfterCheckItems
     }
 
-    suspend fun getRepairDetailPartList(): List<RepairDetailPartListItem> {
+    suspend fun getRepairDetailPartList(offerId: String): List<RepairDetailPartListItem> {
         val repairDetailPartList = httpClient
-            .get("https://api-staging-v10.fleetify.id/api/orders/offer_detail_by_offer_id?offerId=SP-6/ORD/23112022/215932/MBA/VHC-BLOG-2")
+            .get("https://api-staging-v10.fleetify.id/api/orders/offer_detail_by_offer_id?offerId=${offerId}")
             .body<List<RepairDetailPartListItem>>()
         return repairDetailPartList
     }
 
-    suspend fun getRepairDetailPartTotalPrice(): RepairDetailPartTotalPrice {
+    suspend fun getRepairDetailPartTotalPrice(offerId: String): RepairDetailPartTotalPrice {
         val repairDetailPartTotalPrice = httpClient
-            .get("https://api-staging-v10.fleetify.id/api/orders/offer_price_by_offer_id?offerId=SP-6/ORD/23112022/215932/MBA/VHC-BLOG-2")
+            .get("https://api-staging-v10.fleetify.id/api/orders/offer_price_by_offer_id?offerId=${offerId}")
             .body<List<RepairDetailPartTotalPrice>>()
         return repairDetailPartTotalPrice[0]
     }
 
-    suspend fun getRepairDetailWorkshopOfferNote(): String {
+    suspend fun getRepairDetailWorkshopOfferNote(orderId: String): String {
         val workshopOfferNote = httpClient
-            .get("https://api-staging-v10.fleetify.id/api/orders/offer_letter_note_from_workshop?orderId=ORD/23112022/215932/MBA/VHC-BLOG-2")
+            .get("https://api-staging-v10.fleetify.id/api/orders/offer_letter_note_from_workshop?orderId=${orderId}")
             .body<String>()
         return workshopOfferNote
     }
+
+    private fun setResultRepairOrder(repairs: List<RepairOrderResponse>): ArrayList<RepairOrderModel> {
+
+        val listReport = ArrayList<RepairOrderModel>()
+
+        for (repair in repairs) {
+            repair.apply {
+                val getResult = RepairOrderModel(
+                    orderId = orderId,
+                    SPKId = SPKId,
+                    noteCheckFromMechanic = noteCheckFromMechanic,
+                    offerId = offerId,
+                    previousOfferId = null,
+                    correctionReason = null,
+                    problemName = problemName,
+                    scheduledDate = scheduledDate,
+                    stageName = stageName,
+                    totalAfterTax = totalAfterTax,
+                    vehicleBrand = vehicleBrand,
+                    vehicleLicenseNumber = vehicleLicenseNumber,
+                    vehiclePhoto = vehiclePhoto,
+                    vehicleType = vehicleType,
+                    vehicleVarian = vehicleVarian,
+                    vehicleYear = vehicleYear,
+                    vehicleName = vehicleName,
+                    vehicleDistrict = vehicleDistrict,
+                    workshopArea = workshopArea,
+                    workshopName = workshopName
+                )
+                listReport.add(getResult)
+            }
+        }
+        return listReport
+    }
+
+    private fun setResultRepairOrderAdditionalPartRequest(repairs: List<RepairOrderAdditionalPartRequestResponse>): ArrayList<RepairOrderModel> {
+
+
+        val listReport = ArrayList<RepairOrderModel>()
+
+        for (repair in repairs) {
+            repair.apply {
+                val getResult = RepairOrderModel(
+                    orderId = orderId,
+                    SPKId = null,
+                    noteCheckFromMechanic = null,
+                    offerId = offerId,
+                    previousOfferId = previousOfferId,
+                    correctionReason = correctionReason,
+                    problemName = problemName,
+                    scheduledDate = scheduledDate,
+                    stageName = stageName,
+                    totalAfterTax = null,
+                    vehicleBrand = vehicleBrand,
+                    vehicleLicenseNumber = vehicleLicenseNumber,
+                    vehiclePhoto = vehiclePhoto,
+                    vehicleType = vehicleType,
+                    vehicleVarian = vehicleVarian,
+                    vehicleYear = vehicleYear,
+                    vehicleName = vehicleName,
+                    vehicleDistrict = vehicleDistrict,
+                    workshopArea = workshopArea,
+                    workshopName = workshopName
+                )
+                listReport.add(getResult)
+            }
+        }
+        return listReport
+    }
+
 }

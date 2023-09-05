@@ -15,7 +15,7 @@ data class RepairItemResponse(
     val vehicleType: String,
     val vehicleVarian: String,
     val vehicleYear: String,
-    val vehicleLambungId: String,
+    val vehicleLambungId: String?,
     val vehicleDistrict: String,
     val workshopArea: String,
     val workshopName: String

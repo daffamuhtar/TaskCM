@@ -1,5 +1,8 @@
 package com.daffamuhtar.taskcm.approval.data.response
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class RepairOrderAdditionalPartRequestResponse(
     val correctionReason: String,
     val offerId: String,
@@ -15,6 +18,7 @@ data class RepairOrderAdditionalPartRequestResponse(
     val vehicleType: String,
     val vehicleVarian: String,
     val vehicleYear: String,
+    val vehicleName: String = "${vehicleBrand} ${vehicleType} ${vehicleVarian} ${vehicleYear}",
     val workshopArea: String,
     val workshopName: String
 )

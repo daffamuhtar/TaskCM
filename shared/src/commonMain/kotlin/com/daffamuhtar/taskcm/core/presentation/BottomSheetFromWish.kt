@@ -1,7 +1,11 @@
 package com.daffamuhtar.taskcm.core.presentation
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
@@ -20,31 +24,38 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun BottomSheetFromWish(
     visible: Boolean,
+    enterTransition: EnterTransition,
+    exitTransition: ExitTransition,
     modifier: Modifier = Modifier,
     content: @Composable ColumnScope.() -> Unit
 ) {
     AnimatedVisibility(
         visible = visible,
-        enter = slideInVertically(
-            animationSpec = tween(durationMillis = 300),
-            initialOffsetY = { it }
-        ),
-        exit = slideOutVertically(
-            animationSpec = tween(durationMillis = 300),
-            targetOffsetY = { it }
-        ),
+//        enter = slideInVertically(
+//            animationSpec = tween(durationMillis = 300),
+//            initialOffsetY = { it }
+//        ),
+//        exit = slideOutVertically(
+//            animationSpec = tween(durationMillis = 300),
+//            targetOffsetY = { it }
+//        ),
+
+//        enter = fadeIn(animationSpec = tween(2000)),
+//        exit = fadeOut(animationSpec = tween(2000))
+
+        enter = enterTransition,
+        exit = exitTransition
+
     ) {
         Column(
             modifier = modifier
-                .clip(
-                    RoundedCornerShape(
-                        topStart = 30.dp,
-                        topEnd = 30.dp,
-                    )
-                )
-                .background(MaterialTheme.colorScheme.surface)
-                .padding(16.dp)
-        ){
+//                .clip(
+//                    RoundedCornerShape(
+//                        topStart = 30.dp,
+//                        topEnd = 30.dp,
+//                    )
+//                )
+        ) {
             content()
         }
     }

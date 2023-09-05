@@ -17,14 +17,20 @@ sealed interface RepairListEvent {
     class OnPhotoPicked(val bytes: ByteArray) : RepairListEvent
     object OnAddPhotoClicked : RepairListEvent
     object SaveContact : RepairListEvent
-    data class SelectRepairItem(val contact: RepairOrderModel) : RepairListEvent
+    data class SelectRepairItem(val repairOrderModel: RepairOrderModel) : RepairListEvent
+
+    data class DoApproveRepairOrder(val repairOrderModel: RepairOrderModel) : RepairListEvent
+    object DismissApproveRepairOrder : RepairListEvent
+    data class DoRejectRepairOrder(val repairOrderModel: RepairOrderModel) : RepairListEvent
+    object DismissRejectRepairOrder : RepairListEvent
+
     data class EditContact(val contact: RepairOrderModel) : RepairListEvent
     object DeleteContact : RepairListEvent
 
 
 //    data class DataResponseRefreshToken(val responseRefreshToken: ResponseRefreshToken) : RepairListEvent
 
-    object OnLoadingRepairOrderList : RepairListEvent
+    class OnLoadingRepairOrderList(val int: Int) : RepairListEvent
     data class DataRepairOrderList(val repairOrderModels: List<RepairOrderModel>) : RepairListEvent
 
     object OnLoadingRepairDetailInfo : RepairListEvent
@@ -42,7 +48,7 @@ sealed interface RepairListEvent {
     object OnLoadingRepairDetailWorkshopOfferNote: RepairListEvent
     data class DataRepairDetailWorkshopOfferNote(val repairDetailWorkshopOfferNote: String) : RepairListEvent
 
-    class PostReject(val offerId: String, val orderId: String) : RepairListEvent
+    class PostReject(val offerId: String, val orderId: String, val rejectionNote: String) : RepairListEvent
     data class DataResponseRejectRepairOrder(val responseResult: ResponseResult) : RepairListEvent
 
     class PostApproveRepairOrder(val offerId: String, val orderId: String) : RepairListEvent

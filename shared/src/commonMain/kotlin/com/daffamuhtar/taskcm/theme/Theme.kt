@@ -2,6 +2,7 @@ package com.daffamuhtar.taskcm.theme
 
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
+import androidx.compose.ui.graphics.Color
 
 val DarkColorScheme = darkColorScheme(
     primary = GreenPrimaryDark,
@@ -30,15 +31,15 @@ val DarkColorScheme = darkColorScheme(
 )
 
 val LightColorScheme = lightColorScheme(
-    primary = GreenPrimaryLight,
-    secondary = GreenSecondaryLight,
-    tertiary = GreenTertiaryLight,
-    onPrimary = OnGreenLight,
-    primaryContainer = GreenContainerLight,
-    onPrimaryContainer = OnGreenContainerLight,
-    onSecondary = OnGreenSecondaryLight,
-    secondaryContainer = GreenSecondaryContainerLight,
-    onSecondaryContainer = OnGreenSecondaryContainerLight,
+    primary = color_yellow,
+    secondary = color_blue,
+    tertiary = color_yellowdark,
+    onPrimary = color_black,
+    primaryContainer = color_yellowsoft,
+    onPrimaryContainer = color_yellowdark,
+    onSecondary = color_white,
+    secondaryContainer = color_bluesoft,
+    onSecondaryContainer = color_blue,
     onTertiary = OnGreenTertiaryLight,
     onTertiaryContainer = OnGreenTertiaryContainerLight,
     tertiaryContainer = GreenTertiaryContainerLight,
@@ -53,4 +54,28 @@ val LightColorScheme = lightColorScheme(
     errorContainer = ErrorContainerLight,
     onErrorContainer = OnErrorContainerLight,
     outline = OutlineLight,
+
+//    primary = GreenPrimaryLight,
+//    secondary = GreenSecondaryLight,
+//    tertiary = GreenTertiaryLight,
+//    onPrimary = OnGreenLight,
+//    primaryContainer = GreenContainerLight,
+//    onPrimaryContainer = OnGreenContainerLight,
+//    onSecondary = OnGreenSecondaryLight,
+//    secondaryContainer = GreenSecondaryContainerLight,
+//    onSecondaryContainer = OnGreenSecondaryContainerLight,
+//    onTertiary = OnGreenTertiaryLight,
+//    onTertiaryContainer = OnGreenTertiaryContainerLight,
+//    tertiaryContainer = GreenTertiaryContainerLight,
+//    background = BackgroundLight,
+//    onBackground = OnBackgroundLight,
+//    surface = SurfaceLight,
+//    onSurface = OnSurfaceLight,
+//    surfaceVariant = SurfaceVariantLight,
+//    onSurfaceVariant = OnSurfaceVariantLight,
+//    error = ErrorLight,
+//    onError = OnErrorLight,
+//    errorContainer = ErrorContainerLight,
+//    onErrorContainer = OnErrorContainerLight,
+//    outline = OutlineLight,
 )
