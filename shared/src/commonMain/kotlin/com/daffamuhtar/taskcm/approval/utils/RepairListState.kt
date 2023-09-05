@@ -12,7 +12,7 @@ import com.daffamuhtar.taskcm.approval.data.response.LoginResponse
 data class RepairListState(
 
 
-    val isLoadingLogin: Boolean = false,
+    val isLoadingPostLogin: Boolean = false,
     val loginResponse: LoginResponse? = null,
 
     val loggedUserId: String? = loginResponse?.loggedGAId ?: "GA-BLOG-3",

@@ -147,7 +147,7 @@ class ApprovalViewModel() : ViewModel() {
                     }
 
                     var result: List<RepairOrderModel> = emptyList()
-                    _state.value.loggedUserId?.let {
+                    _state.value.loginResponse?.loggedGAId?.let {
                         when (event.int) {
                             0 -> {
                                 result = getRepairOrderAdhoc(it)
@@ -458,6 +458,48 @@ class ApprovalViewModel() : ViewModel() {
                 }
             }
 
+            is RepairListEvent.PostLogin -> {
+                viewModelScope.launch {
+                    _state.update {
+                        it.copy(
+                            isLoadingPostLogin  = true
+                        )
+                    }
+
+                    val response = login(
+                        username = event.username,
+                        password = event.password,
+                    )
+
+                    onEvent(RepairListEvent.DataLoginResponse(response))
+
+//                    delay(3000) // Animation delay
+//
+//                    onEvent(
+//                        RepairListEvent.DataResponseRejectRepairOrder(
+//                            responseResult = ResponseResult(
+//                                true,
+//                                "message"
+//                            )
+//                        )
+//                    )
+
+                }
+            }
+
+            is RepairListEvent.DataLoginResponse -> {
+                _state.update {
+                    it.copy(
+                        isLoadingPostLogin = false,
+                        loginResponse = event.loginResponse
+                    )
+                }
+
+                onEvent(RepairListEvent.OnLoadingRepairOrderList(0))
+
+
+            }
+
             else -> Unit
         }
     }
@@ -489,7 +531,7 @@ class ApprovalViewModel() : ViewModel() {
 
         install(Auth) {
             val token =
-                "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjYiLCJ1c2VybmFtZSI6ImZsZWV0MS10ZXN0aW5nIiwiaWF0IjoxNjkzODA0ODI1LCJleHAiOjE2OTM4NDgwMjV9.AiS-flYIXQBWJLlK4QgYLTmT3AOmx2Vu4ZH1Ra8hffQ"
+                "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjYiLCJ1c2VybmFtZSI6ImZsZWV0MS10ZXN0aW5nIiwiaWF0IjoxNjkzODg0NDYxLCJleHAiOjE2OTM5Mjc2NjF9.RLMANWOMDZiUD-CRM-t3qkWKmboN5xg8jjFvNXjJW7I"
 
             bearer {
                 refreshTokens { // this: RefreshTokensParams
@@ -510,8 +552,9 @@ class ApprovalViewModel() : ViewModel() {
     }
 
     init {
-        onEvent(RepairListEvent.OnLoadingRepairOrderList(0))
-
+        _state.value.loginResponse?.let {
+            onEvent(RepairListEvent.OnLoadingRepairOrderList(0))
+        }
 //        updateImages()
     }
 
@@ -545,7 +588,7 @@ class ApprovalViewModel() : ViewModel() {
         password: String,
     ): LoginResponse {
         val response = httpClient
-            .put("https://api-staging-v10.fleetify.id/api/auth/login") {
+            .post("https://api-staging-v10.fleetify.id/api/auth/login") {
                 contentType(ContentType.Application.Json)
                 setBody(
                     DataPostLogin(

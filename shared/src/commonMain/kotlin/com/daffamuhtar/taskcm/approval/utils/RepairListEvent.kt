@@ -6,10 +6,19 @@ import com.daffamuhtar.taskcm.approval.data.RepairDetailPartListItem
 import com.daffamuhtar.taskcm.approval.data.RepairDetailPartTotalPrice
 import com.daffamuhtar.taskcm.approval.data.model.RepairOrderModel
 import com.daffamuhtar.taskcm.approval.data.ResponseResult
+import com.daffamuhtar.taskcm.approval.data.response.LoginResponse
 
 sealed interface RepairListEvent {
     object OnAddNewContactClick : RepairListEvent
     object DismissContact : RepairListEvent
+
+    //login
+
+    class PostLogin(val username: String, val password: String) : RepairListEvent
+    data class DataLoginResponse(val loginResponse: LoginResponse) : RepairListEvent
+
+ //======
+
     data class OnFirstNameChanged(val value: String) : RepairListEvent
     data class OnLastNameChanged(val value: String) : RepairListEvent
     data class OnEmailChanged(val value: String) : RepairListEvent

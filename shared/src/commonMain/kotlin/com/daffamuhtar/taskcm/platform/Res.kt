@@ -2,6 +2,8 @@ package com.daffamuhtar.taskcm.platform
 
 object Res {
     object drawable {
+        val img_fleetify_full = "drawable/icon_fleetifyfull.png"
+
         val p1 = "drawable/p1.jpeg"
         val p2 = "drawable/p2.jpeg"
         val p3 = "drawable/p3.jpeg"

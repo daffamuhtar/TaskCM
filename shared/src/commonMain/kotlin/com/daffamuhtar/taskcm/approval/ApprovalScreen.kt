@@ -26,6 +26,9 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material.icons.rounded.Assignment
+import androidx.compose.material.icons.rounded.AssignmentReturn
+import androidx.compose.material.icons.rounded.AssignmentTurnedIn
 import androidx.compose.material.icons.rounded.PersonAdd
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DrawerValue
@@ -140,7 +143,7 @@ fun ApprovalScreen(
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     var selectedItemIndex by rememberSaveable {
-        mutableStateOf(0)
+        mutableStateOf("surat-penawaran-submenu")
     }
 
     var selectedItemTitle by rememberSaveable {
@@ -153,80 +156,200 @@ fun ApprovalScreen(
 //                drawerContainerColor = color_yellow
             ){
 
-                Spacer(modifier = Modifier.height(16.dp))
-                Text(
-                    text = "Perbaikan Adhoc",
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.SemiBold,
-                    color = Color.Black,
-                    modifier = Modifier.padding(horizontal = 15.dp),
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                menuAdhoc.forEachIndexed { index, item ->
-                    NavigationDrawerItem(
-                        colors = NavigationDrawerItemDefaults.colors(
-                            selectedContainerColor = color_black,
-                            selectedIconColor= color_yellow,
-                            selectedTextColor=color_yellow,
-                        ),
-                        label = {
+                state.loginResponse?.menus?.let {
+                    it.forEachIndexed{ index, item ->
+
+                        if(item.menu.id== "perbaikan-big-menu" ||
+                            item.menu.id== "pnb-big-menu" ||
+                            item.menu.id== "ban-big-menu"){
+                            Spacer(modifier = Modifier.height(16.dp))
                             Text(
-                                text = item.title,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
+                                text = item.menu.name,
+                                style = MaterialTheme.typography.headlineSmall,
+                                fontWeight = FontWeight.SemiBold,
+                                color = Color.Black,
+                                modifier = Modifier.padding(horizontal = 15.dp),
                             )
-                        },
-                        selected = index == selectedItemIndex,
-                        onClick = {
-                            selectedItemIndex = index
-                            selectedItemTitle = item.title
-                            when (index) {
-                                0 -> {
-                                    onEvent(RepairListEvent.OnLoadingRepairOrderList(index))
-                                }
+                            Spacer(modifier = Modifier.height(16.dp))
+                            item.submenu.forEachIndexed { index, submenu ->
+                                NavigationDrawerItem(
+                                    colors = NavigationDrawerItemDefaults.colors(
+                                        selectedContainerColor = color_black,
+                                        selectedIconColor= color_yellow,
+                                        selectedTextColor=color_yellow,
+                                    ),
+                                    label = {
+                                        Text(
+                                            text = submenu.name,
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis
+                                        )
+                                    },
+                                    selected = item.submenu[index].id == selectedItemIndex,
+                                    onClick = {
+                                        selectedItemIndex = item.submenu[index].id
+                                        selectedItemTitle = submenu.name
+                                        when (index) {
+                                            0 -> {
+                                                onEvent(RepairListEvent.OnLoadingRepairOrderList(index))
+                                            }
 
-                                1 -> {
-                                    onEvent(RepairListEvent.OnLoadingRepairOrderList(index))
-                                }
+                                            1 -> {
+                                                onEvent(RepairListEvent.OnLoadingRepairOrderList(index))
+                                            }
 
-                                2 -> {
-                                    onEvent(RepairListEvent.OnLoadingRepairOrderList(index))
-                                }
+                                            2 -> {
+                                                onEvent(RepairListEvent.OnLoadingRepairOrderList(index))
+                                            }
 
+                                        }
+
+                                        scope.launch {
+                                            drawerState.close()
+                                        }
+                                    },
+                                    icon = {
+                                        val icon:ImageVector
+                                        when (index) {
+                                            0 -> {
+                                                icon = Icons.Rounded.Assignment
+                                            }
+
+                                            1 -> {
+                                                icon = Icons.Rounded.AssignmentReturn
+
+                                            }
+
+                                            2 -> {
+                                                icon = Icons.Rounded.AssignmentTurnedIn
+                                            }
+
+                                        }
+
+                                        Icon(
+                                            imageVector = when (index) {
+                                                0 -> {
+                                                    Icons.Rounded.Assignment
+                                                }
+
+                                                1 -> {
+                                                    Icons.Rounded.AssignmentReturn
+
+                                                }
+
+                                                2 -> {
+                                                    Icons.Rounded.AssignmentTurnedIn
+                                                }
+
+                                                else -> {
+                                                    Icons.Rounded.AssignmentTurnedIn
+
+                                                }
+                                            },
+                                            contentDescription = submenu.name
+                                        )
+                                    },
+                                    badge = {
+//                                    submenu.badgeCount?.let {
+//
+//                                        Box(
+//                                            modifier = Modifier
+//                                                .clip(CircleShape)
+//                                                .background(color_red)
+//                                                .padding(8.dp)
+//                                        ) {
+//                                            Text(
+//                                                text = submenu.badgeCount.toString(),
+//                                                color = Color.White
+//                                            )
+//
+//                                        }
+//                                    }
+                                    },
+                                    modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+                                )
                             }
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Divider(color = Color.LightGray, thickness = 1.dp)
 
-                            scope.launch {
-                                drawerState.close()
-                            }
-                        },
-                        icon = {
-                            Icon(
-                                imageVector = if (index == selectedItemIndex) item.selectedIcon else item.unselectedIcon,
-                                contentDescription = item.title
-                            )
-                        },
-                        badge = {
-                            item.badgeCount?.let {
+                        }
 
-                                Box(
-                                    modifier = Modifier
-                                        .clip(CircleShape)
-                                        .background(color_red)
-                                        .padding(8.dp)
-                                ) {
-                                    Text(
-                                        text = item.badgeCount.toString(),
-                                        color = Color.White
-                                    )
-
-                                }
-                            }
-                        },
-                        modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
-                    )
+                    }
                 }
-                Spacer(modifier = Modifier.height(16.dp))
-
+//                Spacer(modifier = Modifier.height(16.dp))
+//                Text(
+//                    text = "Perbaikan Adhoc",
+//                    style = MaterialTheme.typography.headlineSmall,
+//                    fontWeight = FontWeight.SemiBold,
+//                    color = Color.Black,
+//                    modifier = Modifier.padding(horizontal = 15.dp),
+//                )
+//                Spacer(modifier = Modifier.height(16.dp))
+//                menuAdhoc.forEachIndexed { index, item ->
+//                    NavigationDrawerItem(
+//                        colors = NavigationDrawerItemDefaults.colors(
+//                            selectedContainerColor = color_black,
+//                            selectedIconColor= color_yellow,
+//                            selectedTextColor=color_yellow,
+//                        ),
+//                        label = {
+//                            Text(
+//                                text = item.title,
+//                                maxLines = 1,
+//                                overflow = TextOverflow.Ellipsis
+//                            )
+//                        },
+//                        selected = index == selectedItemIndex,
+//                        onClick = {
+//                            selectedItemIndex = index
+//                            selectedItemTitle = item.title
+//                            when (index) {
+//                                0 -> {
+//                                    onEvent(RepairListEvent.OnLoadingRepairOrderList(index))
+//                                }
+//
+//                                1 -> {
+//                                    onEvent(RepairListEvent.OnLoadingRepairOrderList(index))
+//                                }
+//
+//                                2 -> {
+//                                    onEvent(RepairListEvent.OnLoadingRepairOrderList(index))
+//                                }
+//
+//                            }
+//
+//                            scope.launch {
+//                                drawerState.close()
+//                            }
+//                        },
+//                        icon = {
+//                            Icon(
+//                                imageVector = if (index == selectedItemIndex) item.selectedIcon else item.unselectedIcon,
+//                                contentDescription = item.title
+//                            )
+//                        },
+//                        badge = {
+//                            item.badgeCount?.let {
+//
+//                                Box(
+//                                    modifier = Modifier
+//                                        .clip(CircleShape)
+//                                        .background(color_red)
+//                                        .padding(8.dp)
+//                                ) {
+//                                    Text(
+//                                        text = item.badgeCount.toString(),
+//                                        color = Color.White
+//                                    )
+//
+//                                }
+//                            }
+//                        },
+//                        modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+//                    )
+//                }
+//                Spacer(modifier = Modifier.height(16.dp))
+//
                 Divider(color = Color.LightGray, thickness = 1.dp)
 
 //                Spacer(modifier = Modifier.height(16.dp))
@@ -402,6 +525,15 @@ fun ApprovalScreen(
         onEvent = onEvent,
         isOpen = state.isSelectedContactSheetOpen,
         selectedRepairOrder = state.selectedRepairOrderModel,
+        snackbarHostState = snackbarHostState,
+        scope = scope,
+    )
+
+    LoginScreen(
+        viewModel = approvalViewModel,
+        state = state,
+        onEvent = onEvent,
+        isOpen = (state.loginResponse==null),
         snackbarHostState = snackbarHostState,
         scope = scope,
     )
