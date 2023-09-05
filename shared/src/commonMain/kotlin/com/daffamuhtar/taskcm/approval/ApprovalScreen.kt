@@ -93,7 +93,6 @@ fun ApprovalScreen(
     state: RepairListState,
     onEvent: (RepairListEvent) -> Unit,
     fcmToken: String?,
-
     ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val scopeScaffold = rememberCoroutineScope()
