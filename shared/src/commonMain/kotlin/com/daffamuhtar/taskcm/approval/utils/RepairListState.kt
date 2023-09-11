@@ -15,6 +15,9 @@ data class RepairListState(
     val isLoadingPostLogin: Boolean = false,
     val loginResponse: LoginResponse? = null,
 
+    val isSuccessLogin: Boolean = false,
+    val isLoginStateAvailable: Boolean = false,
+
     val loggedUserId: String? = loginResponse?.loggedGAId ?: "GA-BLOG-3",
 //    val token: String = "GA-BLOG-2",
 //    val loggedUserId: String = "GA-BLOG-2",

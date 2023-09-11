@@ -4,9 +4,7 @@ import com.daffamuhtar.taskcm.approval.component.RepairDetailSheet
 import com.daffamuhtar.taskcm.approval.component.RepairListItem
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -16,7 +14,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
@@ -51,25 +48,23 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.daffamuhtar.taskcm.approval.utils.LoginState
 import com.daffamuhtar.taskcm.approval.utils.RepairListEvent
 import com.daffamuhtar.taskcm.approval.utils.RepairListState
 import com.daffamuhtar.taskcm.theme.color_black
-import com.daffamuhtar.taskcm.theme.color_red
 import com.daffamuhtar.taskcm.theme.color_yellow
-import dev.icerock.moko.mvvm.compose.getViewModel
-import dev.icerock.moko.mvvm.compose.viewModelFactory
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
 
@@ -93,11 +88,15 @@ fun ApprovalScreen(
     state: RepairListState,
     onEvent: (RepairListEvent) -> Unit,
     fcmToken: String?,
-    ) {
-    val snackbarHostState = remember { SnackbarHostState() }
-    val scopeScaffold = rememberCoroutineScope()
+    loggedUserId: String?,
+    userToken: String?,
+    approvalViewModel: ApprovalViewModel,
+    mainViewModel: MainViewModel,
+    stateMain: LoginState,
+    snackbarHostState: SnackbarHostState,
+    scopeScaffold: CoroutineScope,
+) {
 
-    val approvalViewModel = getViewModel(Unit, viewModelFactory { ApprovalViewModel() })
 //    val uiState by approvalViewModel.uiState.collectAsState()
 
     val menuAdhoc = listOf(
@@ -151,16 +150,18 @@ fun ApprovalScreen(
 
     ModalNavigationDrawer(
         drawerContent = {
-            ModalDrawerSheet (
+            ModalDrawerSheet(
 //                drawerContainerColor = color_yellow
-            ){
+            ) {
 
+                if (selectedItemTitle == "ww")
                 state.loginResponse?.menus?.let {
-                    it.forEachIndexed{ index, item ->
+                    it.forEachIndexed { index, item ->
 
-                        if(item.menu.id== "perbaikan-big-menu" ||
-                            item.menu.id== "pnb-big-menu" ||
-                            item.menu.id== "ban-big-menu"){
+                        if (item.menu.id == "perbaikan-big-menu" ||
+                            item.menu.id == "pnb-big-menu" ||
+                            item.menu.id == "ban-big-menu"
+                        ) {
                             Spacer(modifier = Modifier.height(16.dp))
                             Text(
                                 text = item.menu.name,
@@ -174,8 +175,8 @@ fun ApprovalScreen(
                                 NavigationDrawerItem(
                                     colors = NavigationDrawerItemDefaults.colors(
                                         selectedContainerColor = color_black,
-                                        selectedIconColor= color_yellow,
-                                        selectedTextColor=color_yellow,
+                                        selectedIconColor = color_yellow,
+                                        selectedTextColor = color_yellow,
                                     ),
                                     label = {
                                         Text(
@@ -190,15 +191,27 @@ fun ApprovalScreen(
                                         selectedItemTitle = submenu.name
                                         when (index) {
                                             0 -> {
-                                                onEvent(RepairListEvent.OnLoadingRepairOrderList(index))
+                                                onEvent(
+                                                    RepairListEvent.OnLoadingRepairOrderList(
+                                                        index
+                                                    )
+                                                )
                                             }
 
                                             1 -> {
-                                                onEvent(RepairListEvent.OnLoadingRepairOrderList(index))
+                                                onEvent(
+                                                    RepairListEvent.OnLoadingRepairOrderList(
+                                                        index
+                                                    )
+                                                )
                                             }
 
                                             2 -> {
-                                                onEvent(RepairListEvent.OnLoadingRepairOrderList(index))
+                                                onEvent(
+                                                    RepairListEvent.OnLoadingRepairOrderList(
+                                                        index
+                                                    )
+                                                )
                                             }
 
                                         }
@@ -208,7 +221,7 @@ fun ApprovalScreen(
                                         }
                                     },
                                     icon = {
-                                        val icon:ImageVector
+                                        val icon: ImageVector
                                         when (index) {
                                             0 -> {
                                                 icon = Icons.Rounded.Assignment
@@ -464,7 +477,12 @@ fun ApprovalScreen(
                     floatingActionButton = {
                         FloatingActionButton(
                             onClick = {
-
+                                stateMain.loginResponse?.companyName?.let { it1 ->
+                                    approvalViewModel.showSnackbar(
+                                        it1
+                                    )
+                                } ?: run{
+                                }
                             },
                             shape = RoundedCornerShape(20.dp)
                         ) {
@@ -478,11 +496,27 @@ fun ApprovalScreen(
 
 
                     if (state.isLoadingRepairOrderList) {
+//                        scope.launch {
+//                            snackbarHostState.showSnackbar("Memuat Perbaikan")
+//                        }
+                    }
+
+                    if (state.isSuccessLogin){
                         scope.launch {
-                            snackbarHostState.showSnackbar("Memuat Perbaikan")
+                            snackbarHostState.showSnackbar("Sukses simpan session", withDismissAction = true)
+                        }
+                    } else{
+                        scope.launch {
+                            snackbarHostState.showSnackbar("Gagal simpan session", withDismissAction = true)
                         }
                     }
 
+                    if (state.isLoginStateAvailable){
+                        approvalViewModel.showSnackbar("session ada nih")
+                    }else{
+                        approvalViewModel.showSnackbar("session ga ada")
+
+                    }
 
                     if (state.repairOrderModels != null) {
                         AnimatedVisibility(state.repairOrderModels != null) {
@@ -532,7 +566,7 @@ fun ApprovalScreen(
         viewModel = approvalViewModel,
         state = state,
         onEvent = onEvent,
-        isOpen = (state.loginResponse==null),
+        isOpen = (state.loginResponse == null),
         snackbarHostState = snackbarHostState,
         scope = scope,
     )

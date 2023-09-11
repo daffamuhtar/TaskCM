@@ -1,5 +1,6 @@
 package com.daffamuhtar.taskcm.approval
 
+import androidx.compose.material3.SnackbarHostState
 import com.daffamuhtar.taskcm.approval.data.DataPostApproveRepairOrder
 import com.daffamuhtar.taskcm.approval.data.DataPostLogin
 import com.daffamuhtar.taskcm.approval.data.DataPostRefreshToken
@@ -14,6 +15,7 @@ import com.daffamuhtar.taskcm.approval.data.ResponseResult
 import com.daffamuhtar.taskcm.approval.data.response.LoginResponse
 import com.daffamuhtar.taskcm.approval.data.response.RepairOrderAdditionalPartRequestResponse
 import com.daffamuhtar.taskcm.approval.data.response.RepairOrderResponse
+import com.daffamuhtar.taskcm.approval.utils.LoginState
 import com.daffamuhtar.taskcm.approval.utils.RepairListEvent
 import com.daffamuhtar.taskcm.approval.utils.RepairListState
 import dev.icerock.moko.mvvm.viewmodel.ViewModel
@@ -41,6 +43,7 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.serialization.json.Json
 
 //data class ApprovalUiState(
@@ -53,12 +56,22 @@ import kotlinx.serialization.json.Json
 //    var valueShowDetail = isShowDetail
 //}
 
-class ApprovalViewModel() : ViewModel() {
+class ApprovalViewModel(
+    loggedUserId: String?,
+    userToken: String?,
+    val mainViewModel: MainViewModel,
+    val mainState: LoginState,
+    val snackbarHostState: SnackbarHostState,
+) : ViewModel()
+{
 
     //    private val _uiState = MutableStateFlow<ApprovalUiState>(ApprovalUiState())
     private val _state = MutableStateFlow(RepairListState())
 
+
     val state = _state.asStateFlow()
+
+    var realUserId = loggedUserId
 
     fun onEvent(event: RepairListEvent) {
         when (event) {
@@ -462,7 +475,7 @@ class ApprovalViewModel() : ViewModel() {
                 viewModelScope.launch {
                     _state.update {
                         it.copy(
-                            isLoadingPostLogin  = true
+                            isLoadingPostLogin = true
                         )
                     }
 
@@ -488,14 +501,54 @@ class ApprovalViewModel() : ViewModel() {
             }
 
             is RepairListEvent.DataLoginResponse -> {
-                _state.update {
-                    it.copy(
-                        isLoadingPostLogin = false,
-                        loginResponse = event.loginResponse
-                    )
-                }
 
-                onEvent(RepairListEvent.OnLoadingRepairOrderList(0))
+                viewModelScope.launch {
+                    _state.update {
+                        it.copy(
+                            isLoadingPostLogin = false,
+                            loginResponse = event.loginResponse,
+                        )
+                    }
+
+                    delay(300L)
+
+                    mainViewModel.saveLoginReponse(
+                        loginResponse =  event.loginResponse
+                    )
+
+//                    if (_loginState!=null){
+//
+//                        _loginState.update {
+//                            it.copy(
+//                                loginResponse = event.loginResponse,
+//                                isSuccessGetSession = true
+//                            )
+//
+//                        }
+//
+//                        _state.update {
+//                            it.copy(
+//                                isSuccessLogin = true,
+//                                isLoginStateAvailable = true
+//                            )
+//                        }
+//
+//                    }else{
+//
+//
+//                        _state.update {
+//                            it.copy(
+//                                isSuccessLogin = false,
+//                                isLoginStateAvailable = false
+//                            )
+//                        }
+//                    }
+//
+
+
+                    onEvent(RepairListEvent.OnLoadingRepairOrderList(0))
+
+                }
 
 
             }
@@ -530,20 +583,28 @@ class ApprovalViewModel() : ViewModel() {
         }
 
         install(Auth) {
-            val token =
-                "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjYiLCJ1c2VybmFtZSI6ImZsZWV0MS10ZXN0aW5nIiwiaWF0IjoxNjkzODg0NDYxLCJleHAiOjE2OTM5Mjc2NjF9.RLMANWOMDZiUD-CRM-t3qkWKmboN5xg8jjFvNXjJW7I"
+            val token = state.value.loginResponse?.jwtToken ?: "no token"
 
             bearer {
                 refreshTokens { // this: RefreshTokensParams
                     // Refresh tokens and return them as the 'BearerTokens' instance
-                    BearerTokens(accessToken = token, refreshToken = token)
+                    _state.value.loginResponse?.jwtToken?.let {
+                        BearerTokens(
+                            accessToken = it,
+                            refreshToken = token
+                        )
+                    }
                 }
 
+
                 loadTokens {
-                    BearerTokens(
-                        accessToken = token,
-                        refreshToken = token
-                    )
+                    _state.value.loginResponse?.jwtToken?.let {
+                        BearerTokens(
+                            accessToken = it,
+                            refreshToken = token
+                        )
+                    }
+
                 }
 
             }
@@ -552,9 +613,22 @@ class ApprovalViewModel() : ViewModel() {
     }
 
     init {
-        _state.value.loginResponse?.let {
-            onEvent(RepairListEvent.OnLoadingRepairOrderList(0))
+
+        viewModelScope.launch {
+            mainViewModel.state.value.loginResponse?.let { logState ->
+                _state.update { state ->
+                    state.copy(
+                        loginResponse = logState
+                    )
+                }
+
+            }
+
+            _state.value.loginResponse?.let {
+                onEvent(RepairListEvent.OnLoadingRepairOrderList(0))
+            }
         }
+
 //        updateImages()
     }
 
@@ -719,7 +793,18 @@ class ApprovalViewModel() : ViewModel() {
             .get("https://api-staging-v10.fleetify.id/api/orders/offer_letter_note_from_workshop?orderId=${orderId}")
             .body<String>()
         return workshopOfferNote
+
+
     }
+
+    fun showSnackbar(message: String) {
+        viewModelScope.launch {
+            snackbarHostState.showSnackbar(message, withDismissAction = true)
+
+        }
+
+    }
+
 
     private fun setResultRepairOrder(repairs: List<RepairOrderResponse>): ArrayList<RepairOrderModel> {
 

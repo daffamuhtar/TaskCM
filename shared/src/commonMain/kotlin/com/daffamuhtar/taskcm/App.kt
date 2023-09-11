@@ -2,13 +2,18 @@ package com.daffamuhtar.taskcm
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import com.daffamuhtar.taskcm.approval.ApprovalScreen
 import com.daffamuhtar.taskcm.approval.ApprovalViewModel
+import com.daffamuhtar.taskcm.approval.MainViewModel
+import com.daffamuhtar.taskcm.approval.utils.LoginState
 //import com.daffamuhtar.taskcm.contacts.presentation.bird.BirdAppTheme
 //import com.daffamuhtar.taskcm.contacts.presentation.bird.BirdsPage
 //import com.daffamuhtar.taskcm.contacts.presentation.bird.com.daffamuhtar.taskcm.contacts.presentation.bird.BirdsViewModel
@@ -17,6 +22,8 @@ import com.daffamuhtar.taskcm.core.presentation.ImagePicker
 import com.daffamuhtar.taskcm.di.AppModule
 import dev.icerock.moko.mvvm.compose.getViewModel
 import dev.icerock.moko.mvvm.compose.viewModelFactory
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 @Composable
 fun App(
@@ -25,6 +32,10 @@ fun App(
     appModule: AppModule,
     imagePicker: ImagePicker,
     fcmToken: String?,
+    loggedUserId: String?,
+    userToken: String?,
+    mainViewModel: MainViewModel,
+    stateMain: LoginState,
 ) {
 
     ContactsTheme(
@@ -32,10 +43,13 @@ fun App(
         dynamicColor = dynamicColor,
     ){
 
+        val snackbarHostState = remember { SnackbarHostState() }
+        val scopeScaffold = rememberCoroutineScope()
+
         val viewModel2 =  getViewModel(
             key ="approval-list-screen",
             factory = viewModelFactory {
-                ApprovalViewModel()
+                ApprovalViewModel(loggedUserId, userToken, mainViewModel, stateMain, snackbarHostState)
             }
         )
 
@@ -68,7 +82,15 @@ fun App(
             ApprovalScreen(
                 state = state2,
                 onEvent = viewModel2::onEvent,
-                fcmToken = fcmToken
+                fcmToken = fcmToken,
+                loggedUserId = loggedUserId,
+                userToken = userToken,
+                approvalViewModel = viewModel2,
+                mainViewModel = mainViewModel,
+                stateMain = stateMain,
+                snackbarHostState = snackbarHostState,
+                scopeScaffold = scopeScaffold
+
             )
 
         }

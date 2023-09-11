@@ -17,6 +17,11 @@ fun MainViewController () = ComposeUIViewController{
         dynamicColor = true,
         appModule = AppModule(),
         imagePicker = ImagePickerFactory(LocalUIViewController.current).createPicker(),
-        fcmToken = null
+        fcmToken = null,
+        loggedUserId = "userId",
+        userToken = "userToken",
+        loginState = null,
+        loginStateMain = null,
+        saveSession = null
     )
 }
