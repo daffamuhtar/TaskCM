@@ -95,8 +95,8 @@ class MainActivity : ComponentActivity() {
 
 
             App(
-                darkTheme = isSystemInDarkTheme(),
-                dynamicColor = true,
+                darkTheme = false,
+                dynamicColor = false,
                 appModule = AppModule(LocalContext.current.applicationContext),
                 imagePicker = ImagePickerFactory().createPicker(),
                 fcmToken = token,

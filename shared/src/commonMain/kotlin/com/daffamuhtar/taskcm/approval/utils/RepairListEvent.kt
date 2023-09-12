@@ -48,6 +48,12 @@ sealed interface RepairListEvent {
     object OnLoadingRepairDetailAfterCheck : RepairListEvent
     data class DataRepairDetailAfterCheck(val repairDetailAfterCheckItems: List<RepairDetailAfterCheckItem>) : RepairListEvent
 
+    object OnLoadingRepairDetailPreviousPartList : RepairListEvent
+    data class DataRepairDetailPreviousPartList(val repairDetailPartListItems: List<RepairDetailPartListItem>) : RepairListEvent
+
+    object OnLoadingRepairDetailPreviousPartTotalPrice : RepairListEvent
+    data class DataRepairDetailPreviousPartTotalPrice(val repairDetailPartTotalPrice: RepairDetailPartTotalPrice) : RepairListEvent
+
     object OnLoadingRepairDetailPartList : RepairListEvent
     data class DataRepairDetailPartList(val repairDetailPartListItems: List<RepairDetailPartListItem>) : RepairListEvent
 

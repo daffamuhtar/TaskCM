@@ -154,7 +154,6 @@ fun ApprovalScreen(
 //                drawerContainerColor = color_yellow
             ) {
 
-                if (selectedItemTitle == "ww")
                 state.loginResponse?.menus?.let {
                     it.forEachIndexed { index, item ->
 
@@ -287,149 +286,15 @@ fun ApprovalScreen(
                         }
 
                     }
+                } ?: run {
+                    Text(
+                        text = "Kosong waaa",
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
                 }
-//                Spacer(modifier = Modifier.height(16.dp))
-//                Text(
-//                    text = "Perbaikan Adhoc",
-//                    style = MaterialTheme.typography.headlineSmall,
-//                    fontWeight = FontWeight.SemiBold,
-//                    color = Color.Black,
-//                    modifier = Modifier.padding(horizontal = 15.dp),
-//                )
-//                Spacer(modifier = Modifier.height(16.dp))
-//                menuAdhoc.forEachIndexed { index, item ->
-//                    NavigationDrawerItem(
-//                        colors = NavigationDrawerItemDefaults.colors(
-//                            selectedContainerColor = color_black,
-//                            selectedIconColor= color_yellow,
-//                            selectedTextColor=color_yellow,
-//                        ),
-//                        label = {
-//                            Text(
-//                                text = item.title,
-//                                maxLines = 1,
-//                                overflow = TextOverflow.Ellipsis
-//                            )
-//                        },
-//                        selected = index == selectedItemIndex,
-//                        onClick = {
-//                            selectedItemIndex = index
-//                            selectedItemTitle = item.title
-//                            when (index) {
-//                                0 -> {
-//                                    onEvent(RepairListEvent.OnLoadingRepairOrderList(index))
-//                                }
-//
-//                                1 -> {
-//                                    onEvent(RepairListEvent.OnLoadingRepairOrderList(index))
-//                                }
-//
-//                                2 -> {
-//                                    onEvent(RepairListEvent.OnLoadingRepairOrderList(index))
-//                                }
-//
-//                            }
-//
-//                            scope.launch {
-//                                drawerState.close()
-//                            }
-//                        },
-//                        icon = {
-//                            Icon(
-//                                imageVector = if (index == selectedItemIndex) item.selectedIcon else item.unselectedIcon,
-//                                contentDescription = item.title
-//                            )
-//                        },
-//                        badge = {
-//                            item.badgeCount?.let {
-//
-//                                Box(
-//                                    modifier = Modifier
-//                                        .clip(CircleShape)
-//                                        .background(color_red)
-//                                        .padding(8.dp)
-//                                ) {
-//                                    Text(
-//                                        text = item.badgeCount.toString(),
-//                                        color = Color.White
-//                                    )
-//
-//                                }
-//                            }
-//                        },
-//                        modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
-//                    )
-//                }
-//                Spacer(modifier = Modifier.height(16.dp))
-//
                 Divider(color = Color.LightGray, thickness = 1.dp)
 
-//                Spacer(modifier = Modifier.height(16.dp))
-//                Text(
-//                    text = "Perbaikan Non Berkala",
-//                    style = MaterialTheme.typography.bodyLarge,
-//                    fontWeight = FontWeight.Bold,
-//                    color = Color.Black,
-//                    modifier = Modifier.padding(horizontal = 15.dp),
-//
-//                )
-//
-//                Spacer(modifier = Modifier.height(16.dp))
-//                menuNonPeriod.forEachIndexed { index, item ->
-//                    NavigationDrawerItem(
-//                        label = {
-//                            Text(
-//                                text = item.title,
-//                                maxLines = 1,
-//                                overflow = TextOverflow.Ellipsis
-//                            )
-//                        },
-//                        selected = index == selectedItemIndex,
-//                        onClick = {
-//                            selectedItemIndex = index
-//                            selectedItemTitle = item.title
-//                            when (index) {
-//                                0 -> {
-//                                    onEvent(RepairListEvent.OnLoadingRepairOrderList)
-//                                }
-//
-//                                1 -> {
-//                                    onEvent(RepairListEvent.OnLoadingRepairOrderList)
-//                                }
-//
-//                                2 -> {
-//                                    onEvent(RepairListEvent.OnLoadingRepairOrderList)
-//                                }
-//
-//                            }
-//
-//                            scope.launch {
-//                                drawerState.close()
-//                            }
-//                        },
-//                        icon = {
-//                            Icon(
-//                                imageVector = if (index == selectedItemIndex) item.selectedIcon else item.unselectedIcon,
-//                                contentDescription = item.title
-//                            )
-//                        },
-//                        badge = {
-//                            item.badgeCount?.let {
-//
-//                                Box(
-//                                    modifier = Modifier
-//                                        .clip(CircleShape)
-//                                        .background(MaterialTheme.colorScheme.onPrimary)
-//                                        .padding(8.dp)
-//                                ) {
-//                                    Text(text = item.badgeCount.toString())
-//
-//                                }
-//                            }
-//                        },
-//                        modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
-//                    )
-//                }
             }
 
         },
@@ -503,19 +368,8 @@ fun ApprovalScreen(
 
                     if (state.isSuccessLogin){
                         scope.launch {
-                            snackbarHostState.showSnackbar("Sukses simpan session", withDismissAction = true)
+                            snackbarHostState.showSnackbar("Sukses Login", withDismissAction = true)
                         }
-                    } else{
-                        scope.launch {
-                            snackbarHostState.showSnackbar("Gagal simpan session", withDismissAction = true)
-                        }
-                    }
-
-                    if (state.isLoginStateAvailable){
-                        approvalViewModel.showSnackbar("session ada nih")
-                    }else{
-                        approvalViewModel.showSnackbar("session ga ada")
-
                     }
 
                     if (state.repairOrderModels != null) {

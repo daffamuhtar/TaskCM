@@ -42,6 +42,12 @@ data class RepairListState(
     val isLoadingGetRepairDetailPartTotalPrice: Boolean = false,
     val repairDetailPartTotalPrice: RepairDetailPartTotalPrice? = null,
 
+    val isLoadingGetRepairDetailPreviousPartList: Boolean = false,
+    val repairDetailPreviousPartListItems: List<RepairDetailPartListItem>? = null,
+
+    val isLoadingGetRepairDetailPreviousPartTotalPrice: Boolean = false,
+    val repairDetailPreviousPartTotalPrice: RepairDetailPartTotalPrice? = null,
+
     val isLoadingGetRepairDetailWorkshopOfferNote: Boolean = false,
     val repairDetailWorkshopOfferNote: String? = null,
 

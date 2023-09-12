@@ -94,6 +94,8 @@ class ApprovalViewModel(
                             selectedRepairOrderModel = null,
                             repairDetailInfo = null,
                             repairDetailAfterCheckItems = null,
+                            repairDetailPreviousPartListItems = null,
+                            repairDetailPreviousPartTotalPrice = null,
                             repairDetailPartListItems = null,
                             repairDetailPartTotalPrice = null,
                             repairDetailWorkshopOfferNote = null,
@@ -267,6 +269,80 @@ class ApprovalViewModel(
                 }
             }
 
+            // Previous Correction
+
+            is RepairListEvent.OnLoadingRepairDetailPreviousPartList -> {
+                viewModelScope.launch {
+                    _state.update {
+                        it.copy(
+                            isLoadingGetRepairDetailPreviousPartList = true
+                        )
+                    }
+                    _state.value.selectedRepairOrderModel?.let {
+                        val repairDetailPartListItems = getRepairDetailPartList(it.offerId)
+
+                        onEvent(RepairListEvent.DataRepairDetailPreviousPartList(repairDetailPartListItems))
+
+                    } ?: run {
+                        _state.update {
+                            it.copy(
+                                isLoadingGetRepairDetailPreviousPartList = false
+                            )
+                        }
+                    }
+
+
+                }
+            }
+
+            is RepairListEvent.DataRepairDetailPreviousPartList -> {
+                _state.update {
+                    it.copy(
+                        isLoadingGetRepairDetailPreviousPartList = false,
+                        repairDetailPreviousPartListItems = event.repairDetailPartListItems
+                    )
+                }
+            }
+
+            is RepairListEvent.OnLoadingRepairDetailPreviousPartTotalPrice -> {
+                viewModelScope.launch {
+                    _state.update {
+                        it.copy(
+                            isLoadingGetRepairDetailPreviousPartTotalPrice = true
+                        )
+                    }
+
+                    _state.value.selectedRepairOrderModel?.let {
+                        val repairDetailPartListItems = getRepairDetailPartTotalPrice(it.offerId)
+
+                        onEvent(
+                            RepairListEvent.DataRepairDetailPreviousPartTotalPrice(
+                                repairDetailPartListItems
+                            )
+                        )
+
+                    } ?: run {
+                        _state.update {
+                            it.copy(
+                                isLoadingGetRepairDetailPreviousPartTotalPrice = false
+                            )
+                        }
+                    }
+
+                }
+            }
+
+            is RepairListEvent.DataRepairDetailPreviousPartTotalPrice -> {
+                _state.update {
+                    it.copy(
+                        isLoadingGetRepairDetailPreviousPartTotalPrice = false,
+                        repairDetailPreviousPartTotalPrice = event.repairDetailPartTotalPrice
+                    )
+                }
+            }
+
+            //After correction
+
             is RepairListEvent.OnLoadingRepairDetailPartList -> {
                 viewModelScope.launch {
                     _state.update {
@@ -290,7 +366,6 @@ class ApprovalViewModel(
 
                 }
             }
-
 
             is RepairListEvent.DataRepairDetailPartList -> {
                 _state.update {

@@ -1,8 +1,6 @@
 package com.daffamuhtar.taskcm.approval.component
 
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
@@ -80,6 +78,7 @@ import com.daffamuhtar.taskcm.theme.color_black
 import com.daffamuhtar.taskcm.theme.color_blue
 import com.daffamuhtar.taskcm.theme.color_grey
 import com.daffamuhtar.taskcm.theme.color_grey0
+import com.daffamuhtar.taskcm.theme.color_lightgrey
 import com.daffamuhtar.taskcm.theme.color_red
 import com.daffamuhtar.taskcm.theme.color_white
 import com.daffamuhtar.taskcm.theme.color_yellow
@@ -181,6 +180,16 @@ fun RepairDetailSheet(
 
                                 if (state.repairDetailAfterCheckItems == null) {
                                     onEvent(RepairListEvent.OnLoadingRepairDetailAfterCheck)
+                                }
+
+                                if(selectedRepairOrder.previousOfferId!=null){
+                                    if (state.repairDetailPreviousPartListItems == null) {
+                                        onEvent(RepairListEvent.OnLoadingRepairDetailPreviousPartList)
+                                    }
+
+                                    if (state.repairDetailPreviousPartTotalPrice == null) {
+                                        onEvent(RepairListEvent.OnLoadingRepairDetailPreviousPartTotalPrice)
+                                    }
                                 }
 
                                 if (state.repairDetailPartListItems == null) {
@@ -327,6 +336,69 @@ fun RepairDetailSheet(
                                     }
                                 }
 
+                                state.repairDetailPreviousPartListItems?.let {
+                                    Spacer(Modifier.height(15.dp))
+                                    Card(
+                                        shape = RoundedCornerShape(0.dp),
+                                        colors = CardDefaults.cardColors(
+                                            containerColor = Color.White
+                                        ),
+                                        elevation = CardDefaults.cardElevation(
+                                            defaultElevation = 5.dp
+                                        ),
+                                    ) {
+                                        Column(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(15.dp),
+                                        ) {
+                                            Text(
+                                                text = "Rincin Penawaran Sebelumnya",
+                                                style = MaterialTheme.typography.headlineSmall,
+                                                fontWeight = FontWeight.SemiBold
+                                            )
+                                            Spacer(Modifier.height(15.dp))
+
+                                            ViewRepairDetailPartList(it, color_lightgrey)
+
+                                            state.repairDetailPreviousPartTotalPrice?.let {
+
+                                                Spacer(Modifier.height(15.dp))
+
+                                                RepairDetailInfoItem(
+                                                    label = "Sub Total",
+                                                    value = "Rp. ${it.subTotal}",
+                                                    valueColor = Color.Black
+                                                )
+
+                                                RepairDetailInfoItem(
+                                                    label = "Diskon",
+                                                    value = "- Rp. ${it.discount}"
+
+                                                )
+                                                RepairDetailInfoItem(
+                                                    label = "PPN",
+                                                    value = "Rp. ${it.tax}",
+                                                    valueColor = Color.Black
+
+                                                )
+
+                                                RepairDetailInfoItem(
+                                                    label = "Total",
+                                                    value = "Rp. ${it.subTotalAfterDiscount}",
+                                                    valueColor = color_blue
+
+                                                )
+                                            }
+
+                                        }
+
+
+                                    }
+
+                                }
+
+
                                 state.repairDetailPartListItems?.let {
                                     Spacer(Modifier.height(15.dp))
                                     Card(
@@ -344,13 +416,13 @@ fun RepairDetailSheet(
                                                 .padding(15.dp),
                                         ) {
                                             Text(
-                                                text = "Daftar Part",
+                                                text = "Rincian Penawaran",
                                                 style = MaterialTheme.typography.headlineSmall,
                                                 fontWeight = FontWeight.SemiBold
                                             )
                                             Spacer(Modifier.height(15.dp))
 
-                                            ViewRepairDetailPartList(it)
+                                            ViewRepairDetailPartList(it, color_yellowsoft)
 
                                             state.repairDetailPartTotalPrice?.let {
 
@@ -479,6 +551,7 @@ fun RepairDetailSheet(
                                         Spacer(Modifier.height(15.dp))
 
                                         Button(
+                                            colors = ButtonDefaults.buttonColors(containerColor = color_yellow),
                                             modifier = Modifier.fillMaxWidth()
                                                 .height(50.dp),
                                             onClick = {
@@ -815,6 +888,7 @@ fun RepairDetailAfterCheckItem(
 @Composable
 fun ViewRepairDetailPartList(
     repairDetailPartListItems: List<RepairDetailPartListItem>,
+    color: Color,
 ) {
     val scrollState = rememberScrollState()
 
@@ -850,7 +924,7 @@ fun ViewRepairDetailPartList(
 
             ViewRepairDetailPartListItem(
                 fontWeight = FontWeight.SemiBold,
-                backgroundColor = color_yellowsoft,
+                backgroundColor = color,
                 RepairDetailPartListItem(
                     genuineOrNon = "Genuine",
                     itemBrand = "Merek Part",

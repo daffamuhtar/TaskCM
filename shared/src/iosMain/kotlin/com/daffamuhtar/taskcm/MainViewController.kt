@@ -1,9 +1,11 @@
 package com.daffamuhtar.taskcm
 
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.ui.interop.LocalUIViewController
 import androidx.compose.ui.window.ComposeUIViewController
 import com.daffamuhtar.taskcm.core.presentation.ImagePickerFactory
 import com.daffamuhtar.taskcm.di.AppModule
+import com.daffamuhtar.taskcm.theme.color_yellow
 import platform.UIKit.UIScreen
 import platform.UIKit.UIUserInterfaceStyle
 
@@ -20,8 +22,7 @@ fun MainViewController () = ComposeUIViewController{
         fcmToken = null,
         loggedUserId = "userId",
         userToken = "userToken",
-        loginState = null,
-        loginStateMain = null,
-        saveSession = null
+        mainViewModel = null,
+        stateMain = null,
     )
 }

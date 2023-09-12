@@ -160,9 +160,9 @@ fun ApprovalConfirmationBottomSheet(
                                 modifier = Modifier
                                     .size(80.dp)
                                     .clip(CircleShape)
-                                    .background(MaterialTheme.colorScheme.secondaryContainer)
+                                    .background(color_yellow)
                                     .padding(10.dp),
-                                tint = MaterialTheme.colorScheme.onSecondaryContainer,
+                                tint = color_black,
                             )
                             Spacer(Modifier.height(15.dp))
 
@@ -187,6 +187,7 @@ fun ApprovalConfirmationBottomSheet(
                             Button(
                                 modifier = Modifier.fillMaxWidth()
                                     .height(50.dp),
+                                colors = ButtonDefaults.buttonColors(containerColor = color_yellow),
                                 onClick = {
                                     selectedRepair?.let {
                                         onEvent(

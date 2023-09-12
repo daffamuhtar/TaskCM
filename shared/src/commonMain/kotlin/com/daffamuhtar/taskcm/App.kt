@@ -34,8 +34,8 @@ fun App(
     fcmToken: String?,
     loggedUserId: String?,
     userToken: String?,
-    mainViewModel: MainViewModel,
-    stateMain: LoginState,
+    mainViewModel: MainViewModel?,
+    stateMain: LoginState?,
 ) {
 
     ContactsTheme(
@@ -49,7 +49,7 @@ fun App(
         val viewModel2 =  getViewModel(
             key ="approval-list-screen",
             factory = viewModelFactory {
-                ApprovalViewModel(loggedUserId, userToken, mainViewModel, stateMain, snackbarHostState)
+                ApprovalViewModel(loggedUserId, userToken, mainViewModel!!, stateMain!!, snackbarHostState)
             }
         )
 
@@ -86,8 +86,8 @@ fun App(
                 loggedUserId = loggedUserId,
                 userToken = userToken,
                 approvalViewModel = viewModel2,
-                mainViewModel = mainViewModel,
-                stateMain = stateMain,
+                mainViewModel = mainViewModel!!,
+                stateMain = stateMain!!,
                 snackbarHostState = snackbarHostState,
                 scopeScaffold = scopeScaffold
 
