@@ -91,8 +91,8 @@ fun ApprovalScreen(
     loggedUserId: String?,
     userToken: String?,
     approvalViewModel: ApprovalViewModel,
-    mainViewModel: MainViewModel,
-    stateMain: LoginState,
+    mainViewModel: MainViewModel?,
+    stateMain: LoginState?,
     snackbarHostState: SnackbarHostState,
     scopeScaffold: CoroutineScope,
 ) {
@@ -342,7 +342,7 @@ fun ApprovalScreen(
                     floatingActionButton = {
                         FloatingActionButton(
                             onClick = {
-                                stateMain.loginResponse?.companyName?.let { it1 ->
+                                stateMain?.loginResponse?.companyName?.let { it1 ->
                                     approvalViewModel.showSnackbar(
                                         it1
                                     )

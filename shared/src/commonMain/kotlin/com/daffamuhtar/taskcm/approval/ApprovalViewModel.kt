@@ -59,8 +59,8 @@ import kotlinx.serialization.json.Json
 class ApprovalViewModel(
     loggedUserId: String?,
     userToken: String?,
-    val mainViewModel: MainViewModel,
-    val mainState: LoginState,
+    val mainViewModel: MainViewModel?,
+    val mainState: LoginState?,
     val snackbarHostState: SnackbarHostState,
 ) : ViewModel()
 {
@@ -587,39 +587,12 @@ class ApprovalViewModel(
 
                     delay(300L)
 
-                    mainViewModel.saveLoginReponse(
-                        loginResponse =  event.loginResponse
-                    )
+                    mainViewModel?.let {
 
-//                    if (_loginState!=null){
-//
-//                        _loginState.update {
-//                            it.copy(
-//                                loginResponse = event.loginResponse,
-//                                isSuccessGetSession = true
-//                            )
-//
-//                        }
-//
-//                        _state.update {
-//                            it.copy(
-//                                isSuccessLogin = true,
-//                                isLoginStateAvailable = true
-//                            )
-//                        }
-//
-//                    }else{
-//
-//
-//                        _state.update {
-//                            it.copy(
-//                                isSuccessLogin = false,
-//                                isLoginStateAvailable = false
-//                            )
-//                        }
-//                    }
-//
-
+                        mainViewModel.saveLoginReponse(
+                            loginResponse =  event.loginResponse
+                        )
+                    }
 
                     onEvent(RepairListEvent.OnLoadingRepairOrderList(0))
 
@@ -690,7 +663,7 @@ class ApprovalViewModel(
     init {
 
         viewModelScope.launch {
-            mainViewModel.state.value.loginResponse?.let { logState ->
+            mainViewModel?.state?.value?.loginResponse?.let { logState ->
                 _state.update { state ->
                     state.copy(
                         loginResponse = logState
@@ -704,7 +677,6 @@ class ApprovalViewModel(
             }
         }
 
-//        updateImages()
     }
 
     override fun onCleared() {

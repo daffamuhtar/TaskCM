@@ -64,9 +64,11 @@ kotlin {
                 implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.1")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
 
-//                //datastore
-//                implementation("androidx.datastore:datastore-preferences-core:1.0.0")
 
+//                // Lower-level APIs with support for custom serialization
+//                implementation("androidx.datastore:datastore-core-okio:1.1.0-dev01")
+//                // Higher-level APIs for storing values of basic types
+//                implementation("androidx.datastore:datastore-preferences-core:1.1.0-dev01")
             }
         }
         val commonTest by getting {
