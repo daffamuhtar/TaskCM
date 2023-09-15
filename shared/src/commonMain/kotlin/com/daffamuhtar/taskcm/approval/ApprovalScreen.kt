@@ -64,7 +64,6 @@ import com.daffamuhtar.taskcm.approval.utils.RepairListState
 import com.daffamuhtar.taskcm.theme.color_black
 import com.daffamuhtar.taskcm.theme.color_yellow
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
 
@@ -95,6 +94,7 @@ fun ApprovalScreen(
     stateMain: LoginState?,
     snackbarHostState: SnackbarHostState,
     scopeScaffold: CoroutineScope,
+    count: Int,
 ) {
 
 //    val uiState by approvalViewModel.uiState.collectAsState()
@@ -342,10 +342,10 @@ fun ApprovalScreen(
                     floatingActionButton = {
                         FloatingActionButton(
                             onClick = {
-                                stateMain?.loginResponse?.companyName?.let { it1 ->
-                                    approvalViewModel.showSnackbar(
-                                        it1
-                                    )
+                                stateMain?.loginResponseString?.let { it1 ->
+                                        approvalViewModel.showSnackbar(
+                                            it1
+                                        )
                                 } ?: run{
                                 }
                             },

@@ -7,7 +7,6 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -17,10 +16,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.lifecycleScope
 import com.daffamuhtar.taskcm.App
-import com.daffamuhtar.taskcm.approval.ApprovalViewModel
 import com.daffamuhtar.taskcm.approval.MainViewModel
 import com.daffamuhtar.taskcm.approval.data.response.LoginResponse
-import com.daffamuhtar.taskcm.approval.utils.LoginState
 import com.daffamuhtar.taskcm.core.presentation.ImagePickerFactory
 import com.daffamuhtar.taskcm.di.AppModule
 import com.google.firebase.ktx.Firebase
@@ -28,14 +25,10 @@ import com.google.firebase.messaging.ktx.messaging
 import com.google.gson.Gson
 import dev.icerock.moko.mvvm.compose.getViewModel
 import dev.icerock.moko.mvvm.compose.viewModelFactory
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
-import kotlin.math.log
 
 class MainActivity : ComponentActivity() {
 
@@ -89,7 +82,7 @@ class MainActivity : ComponentActivity() {
                     saveSession(it)
                 }
             }else{
-                getLoginSession()?.let { mainViewModel.saveLoginReponse(it) }
+                getLoginSession()?.let { mainViewModel.saveLoginReponse(it , null)}
             }
 
 
@@ -104,6 +97,7 @@ class MainActivity : ComponentActivity() {
                 userToken = "userToken",
                 mainViewModel = mainViewModel,
                 stateMain = stateMain,
+                count = 1000,
 
             )
 //            }

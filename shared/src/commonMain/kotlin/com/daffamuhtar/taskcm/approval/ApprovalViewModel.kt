@@ -39,11 +39,11 @@ import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.request.post
 import io.ktor.client.request.put
 import io.ktor.client.request.setBody
+import io.ktor.client.statement.HttpResponse
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.serialization.json.Json
 
 //data class ApprovalUiState(
@@ -67,7 +67,6 @@ class ApprovalViewModel(
 
     //    private val _uiState = MutableStateFlow<ApprovalUiState>(ApprovalUiState())
     private val _state = MutableStateFlow(RepairListState())
-
 
     val state = _state.asStateFlow()
 
@@ -559,7 +558,7 @@ class ApprovalViewModel(
                         password = event.password,
                     )
 
-                    onEvent(RepairListEvent.DataLoginResponse(response))
+                    onEvent(RepairListEvent.DataLoginResponse(response.body<LoginResponse>(),response.body<String>()))
 
 //                    delay(3000) // Animation delay
 //
@@ -588,9 +587,9 @@ class ApprovalViewModel(
                     delay(300L)
 
                     mainViewModel?.let {
-
                         mainViewModel.saveLoginReponse(
-                            loginResponse =  event.loginResponse
+                            loginResponse =  event.loginResponse,
+                            loginResponseString = event.loginResponseString
                         )
                     }
 
@@ -663,13 +662,19 @@ class ApprovalViewModel(
     init {
 
         viewModelScope.launch {
-            mainViewModel?.state?.value?.loginResponse?.let { logState ->
+            val refreshTokenResponse : ResponseRefreshToken = refreshToken()
+
+            mainViewModel?.state?.value?.loginResponse?.let {
+                mainViewModel.updateLoginResponse(refreshTokenResponse.jwtToken)
+
+            }
+
+            mainViewModel?.state?.value?.loginResponse?.let {
                 _state.update { state ->
                     state.copy(
-                        loginResponse = logState
+                        loginResponse = it
                     )
                 }
-
             }
 
             _state.value.loginResponse?.let {
@@ -707,7 +712,7 @@ class ApprovalViewModel(
     suspend fun login(
         username: String,
         password: String,
-    ): LoginResponse {
+    ): HttpResponse {
         val response = httpClient
             .post("https://api-staging-v10.fleetify.id/api/auth/login") {
                 contentType(ContentType.Application.Json)
@@ -717,19 +722,19 @@ class ApprovalViewModel(
                         password = password,
                     )
                 )
-            }.body<LoginResponse>()
+            }
 
         return response
     }
 
     suspend fun refreshToken(): ResponseRefreshToken {
-        val images: ResponseRefreshToken = httpClient
+        val response: ResponseRefreshToken = httpClient
             .post("https://api-staging-v10.fleetify.id/api/auth/refresh_token") {
                 contentType(ContentType.Application.Json)
                 setBody(DataPostRefreshToken("UM-BLOG-9999", "1104", "mechanic"))
             }.body()
 
-        return images
+        return response
     }
 
     suspend fun rejectRepair(

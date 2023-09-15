@@ -15,7 +15,7 @@ sealed interface RepairListEvent {
     //login
 
     class PostLogin(val username: String, val password: String) : RepairListEvent
-    data class DataLoginResponse(val loginResponse: LoginResponse) : RepairListEvent
+    data class DataLoginResponse(val loginResponse: LoginResponse, val loginResponseString: String) : RepairListEvent
 
  //======
 

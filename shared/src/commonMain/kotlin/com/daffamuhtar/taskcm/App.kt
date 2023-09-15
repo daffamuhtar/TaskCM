@@ -22,8 +22,6 @@ import com.daffamuhtar.taskcm.core.presentation.ImagePicker
 import com.daffamuhtar.taskcm.di.AppModule
 import dev.icerock.moko.mvvm.compose.getViewModel
 import dev.icerock.moko.mvvm.compose.viewModelFactory
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 
 @Composable
 fun App(
@@ -36,6 +34,7 @@ fun App(
     userToken: String?,
     mainViewModel: MainViewModel?,
     stateMain: LoginState?,
+    count: Int,
 ) {
 
     ContactsTheme(
@@ -89,7 +88,8 @@ fun App(
                 mainViewModel = mainViewModel,
                 stateMain = stateMain,
                 snackbarHostState = snackbarHostState,
-                scopeScaffold = scopeScaffold
+                scopeScaffold = scopeScaffold,
+                count = count,
 
             )
 

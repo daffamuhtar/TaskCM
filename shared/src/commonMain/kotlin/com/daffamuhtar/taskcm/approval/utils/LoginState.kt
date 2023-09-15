@@ -4,5 +4,6 @@ import com.daffamuhtar.taskcm.approval.data.response.LoginResponse
 
 data class LoginState(
     val loginResponse: LoginResponse? = null,
-    val isSuccessGetSession :Boolean = false
+    val isSuccessGetSession :Boolean = false,
+    val loginResponseString :String? = null
 )
