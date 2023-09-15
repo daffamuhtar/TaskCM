@@ -2,19 +2,11 @@ package com.daffamuhtar.taskcm.android.firebase
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.content.Intent
-import android.util.Log
-import android.widget.Toast
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.core.app.NotificationCompat
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
 import com.daffamuhtar.taskcm.android.R
-import com.daffamuhtar.taskcm.android.dataStore
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import kotlin.random.Random
 
 class TechFirebaseMessagingServices : FirebaseMessagingService() {

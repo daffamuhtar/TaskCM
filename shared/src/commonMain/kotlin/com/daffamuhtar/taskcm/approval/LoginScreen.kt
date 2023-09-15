@@ -18,7 +18,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AssignmentLate
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -44,8 +43,6 @@ import com.daffamuhtar.taskcm.approval.component.ApprovalNoteTextField
 import com.daffamuhtar.taskcm.approval.utils.RepairListEvent
 import com.daffamuhtar.taskcm.approval.utils.RepairListState
 import com.daffamuhtar.taskcm.core.presentation.BottomSheetFromWish
-import com.daffamuhtar.taskcm.theme.color_red
-import com.daffamuhtar.taskcm.theme.color_white
 import kotlinx.coroutines.CoroutineScope
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 

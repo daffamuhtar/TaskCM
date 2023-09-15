@@ -11,7 +11,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.daffamuhtar.taskcm.contacts.domain.Contact
-import com.daffamuhtar.taskcm.contacts.presentation.ContactListEvent
 
 @Composable
 fun ContactPreviewItem(

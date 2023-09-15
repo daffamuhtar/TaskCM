@@ -1,6 +1,5 @@
 package com.daffamuhtar.taskcm.contacts.presentation.bird
 
-import com.daffamuhtar.taskcm.approval.data.TokenInfo
 import dev.icerock.moko.mvvm.viewmodel.ViewModel
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -14,14 +13,11 @@ import kotlinx.coroutines.launch
 import com.daffamuhtar.taskcm.contacts.presentation.bird.model.BirdImage
 import io.ktor.client.plugins.auth.Auth
 import io.ktor.client.plugins.auth.providers.BearerTokens
-import io.ktor.client.plugins.auth.providers.RefreshTokensParams
 import io.ktor.client.plugins.auth.providers.bearer
 import io.ktor.client.plugins.logging.DEFAULT
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
-import io.ktor.client.request.forms.submitForm
-import io.ktor.http.parameters
 import kotlinx.serialization.json.Json
 
 data class BirdsUiState(
