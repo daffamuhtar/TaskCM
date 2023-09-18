@@ -635,7 +635,7 @@ class ApprovalViewModel(
             bearer {
                 refreshTokens { // this: RefreshTokensParams
                     // Refresh tokens and return them as the 'BearerTokens' instance
-                    _state.value.loginResponse?.jwtToken?.let {
+                   state.value.loginResponse?.jwtToken?.let {
                         BearerTokens(
                             accessToken = it,
                             refreshToken = token
@@ -645,7 +645,7 @@ class ApprovalViewModel(
 
 
                 loadTokens {
-                    _state.value.loginResponse?.jwtToken?.let {
+                    state.value.loginResponse?.jwtToken?.let {
                         BearerTokens(
                             accessToken = it,
                             refreshToken = token
@@ -677,11 +677,10 @@ class ApprovalViewModel(
                 }
             }
 
-            _state.value.loginResponse?.let {
+            state.value.loginResponse?.let {
                 onEvent(RepairListEvent.OnLoadingRepairOrderList(0))
             }
         }
-
     }
 
     override fun onCleared() {
