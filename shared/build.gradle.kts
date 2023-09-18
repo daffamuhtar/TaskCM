@@ -5,7 +5,6 @@ plugins {
     id("com.squareup.sqldelight")
 //    id("com.google.gms.google-services")
     kotlin("plugin.serialization") version "1.8.21"
-    id("dev.icerock.mobile.multiplatform-resources")
 }
 
 kotlin {
@@ -31,8 +30,6 @@ kotlin {
         it.binaries.framework {
             baseName = "shared"
             isStatic = true
-            export("dev.icerock.moko:resources:0.22.3")
-            export("dev.icerock.moko:graphics:0.9.0")
         }
     }
 
@@ -77,8 +74,6 @@ kotlin {
 //                implementation("de.gal-digital:kmm-preferences:0.0.1")
                 implementation("com.google.code.gson:gson:2.9.0")
 
-                //Resource
-                api("dev.icerock.moko:resources:0.22.3")
             }
         }
         val commonTest by getting {
@@ -161,9 +156,4 @@ dependencies {
     commonMainApi("dev.icerock.moko:mvvm-compose:0.16.1")
     commonMainApi("dev.icerock.moko:mvvm-flow:0.16.1")
     commonMainApi("dev.icerock.moko:mvvm-flow-compose:0.16.1")
-}
-
-multiplatformResources {
-    multiplatformResourcesPackage = "com.plcoding.kmm_sharingresources"
-    multiplatformResourcesClassName = "SharedRes"
 }

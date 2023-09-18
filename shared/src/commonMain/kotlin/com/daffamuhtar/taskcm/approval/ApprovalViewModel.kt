@@ -635,20 +635,20 @@ class ApprovalViewModel(
             bearer {
                 refreshTokens { // this: RefreshTokensParams
                     // Refresh tokens and return them as the 'BearerTokens' instance
-                   state.value.loginResponse?.jwtToken?.let {
+                    _state.value.loginResponse?.jwtToken?.let {
                         BearerTokens(
-                            accessToken = it,
-                            refreshToken = token
+                            accessToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjIiLCJ1c2VybmFtZSI6InVtLXRlc3RpbmctOTk5OSIsImlhdCI6MTY5NTAyMjAxMCwiZXhwIjoxNjk1MTA4NDEwfQ.e7B08iXzoBXaifaSkJzM2bg1P10EKbStqQpfK0w5GXw",
+                            refreshToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjIiLCJ1c2VybmFtZSI6InVtLXRlc3RpbmctOTk5OSIsImlhdCI6MTY5NTAyMjAxMCwiZXhwIjoxNjk1MTA4NDEwfQ.e7B08iXzoBXaifaSkJzM2bg1P10EKbStqQpfK0w5GXw"
                         )
                     }
                 }
 
 
                 loadTokens {
-                    state.value.loginResponse?.jwtToken?.let {
+                    _state.value.loginResponse?.jwtToken?.let {
                         BearerTokens(
-                            accessToken = it,
-                            refreshToken = token
+                            accessToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjIiLCJ1c2VybmFtZSI6InVtLXRlc3RpbmctOTk5OSIsImlhdCI6MTY5NTAyMjAxMCwiZXhwIjoxNjk1MTA4NDEwfQ.e7B08iXzoBXaifaSkJzM2bg1P10EKbStqQpfK0w5GXw",
+                            refreshToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjIiLCJ1c2VybmFtZSI6InVtLXRlc3RpbmctOTk5OSIsImlhdCI6MTY5NTAyMjAxMCwiZXhwIjoxNjk1MTA4NDEwfQ.e7B08iXzoBXaifaSkJzM2bg1P10EKbStqQpfK0w5GXw"
                         )
                     }
 
@@ -664,23 +664,43 @@ class ApprovalViewModel(
         viewModelScope.launch {
             val refreshTokenResponse : ResponseRefreshToken = refreshToken()
 
-            mainViewModel?.state?.value?.loginResponse?.let {
+            mainViewModel?.state?.value?.loginResponseString?.let {
                 mainViewModel.updateLoginResponse(refreshTokenResponse.jwtToken)
 
             }
 
+
+
             mainViewModel?.state?.value?.loginResponse?.let {
+
                 _state.update { state ->
                     state.copy(
                         loginResponse = it
                     )
                 }
+            } ?: run {
+
+
+                mainViewModel?.state?.value?.loginResponseString?.let {
+
+                    val newLoginResponse: LoginResponse = Json.decodeFromString(
+                        LoginResponse.serializer(),
+                        it
+                    )
+
+                    _state.update { state ->
+                        state.copy(
+                            loginResponse = newLoginResponse
+                        )
+                    }
+                }
             }
 
-            state.value.loginResponse?.let {
+            _state.value.loginResponse?.let {
                 onEvent(RepairListEvent.OnLoadingRepairOrderList(0))
             }
         }
+
     }
 
     override fun onCleared() {

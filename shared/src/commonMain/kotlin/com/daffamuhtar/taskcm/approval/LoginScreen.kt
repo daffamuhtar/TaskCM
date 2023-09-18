@@ -4,7 +4,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -45,10 +43,8 @@ import com.daffamuhtar.taskcm.approval.component.ApprovalNoteTextField
 import com.daffamuhtar.taskcm.approval.utils.RepairListEvent
 import com.daffamuhtar.taskcm.approval.utils.RepairListState
 import com.daffamuhtar.taskcm.core.presentation.BottomSheetFromWish
-import com.daffamuhtar.taskcm.platform.Res
 import kotlinx.coroutines.CoroutineScope
 import org.jetbrains.compose.resources.ExperimentalResourceApi
-import org.jetbrains.compose.resources.painterResource
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
@@ -115,11 +111,11 @@ fun LoginScreen(
                                     tint = MaterialTheme.colorScheme.onPrimaryContainer,
                                 )
 //
-                                Image(
-                                    painter = painterResource(Res.drawable.p1),
-                                    contentDescription = null,
-                                    modifier = Modifier.requiredSize(100.dp)
-                                )
+//                                Image(
+//                                    painter = painterResource(Res.drawable.img_fleetify_full),
+//                                    contentDescription = null,
+//                                    modifier = Modifier.requiredSize(100.dp)
+//                                )
 
                                 Spacer(Modifier.height(15.dp))
                                 Text(
